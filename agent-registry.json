@@ -1,0 +1,573 @@
+{
+  "version": "1.0",
+  "updated": "2026-05-23",
+  "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
+  "agents": [
+    {
+      "id": "webcraft-agent",
+      "name": "WebCraft Agent",
+      "description": "Desenvolve websites completos a partir de briefings em linguagem natural. Gera HTML/CSS/JS ou React, aplica design de qualidade e entrega sites responsivos e acessíveis.",
+      "capabilities": [
+        "landing-page",
+        "site-institucional",
+        "portfolio",
+        "dashboard",
+        "ecommerce-lite",
+        "deploy"
+      ],
+      "input_schema": {
+        "tipo": "string",
+        "produto": "string",
+        "publico": "string",
+        "tom": "string",
+        "stack": "string (opcional, default: HTML/CSS/JS)",
+        "textos": "object (opcional, recebe do copy-agent)",
+        "seo_data": "object (opcional, recebe do seo-agent)",
+        "secoes": "array of strings"
+      },
+      "output_schema": {
+        "html": "string",
+        "css": "string",
+        "js": "string",
+        "arquivos": "array of file paths"
+      },
+      "system_prompt": "agents/webcraft-agent/system-prompt.md",
+      "skills": [
+        "agents/webcraft-agent/skills/intake/SKILL.md",
+        "agents/webcraft-agent/skills/feedback-loop/SKILL.md",
+        "agents/webcraft-agent/skills/deploy/SKILL.md",
+        "agents/webcraft-agent/skills/ecommerce-lite/SKILL.md",
+        "agents/webcraft-agent/skills/multilingual/SKILL.md",
+        "agents/webcraft-agent/skills/performance/SKILL.md",
+        "shared-skills/frontend-design/SKILL.md",
+        "shared-skills/acessibilidade/SKILL.md",
+        "agents/webcraft-agent/skills/motion/SKILL.md",
+        "agents/webcraft-agent/skills/components/SKILL.md",
+        "agents/webcraft-agent/skills/impeccable/SKILL.md",
+        "agents/webcraft-agent/skills/impeccable/INTEGRACAO.md",
+        "shared-skills/ab-testing/SKILL.md",
+        "shared-skills/error-handling/SKILL.md",
+        "shared-skills/forms-backend/SKILL.md"
+      ],
+      "evals": "agents/webcraft/EVALS.md",
+      "can_call": [
+        "copy-agent",
+        "seo-agent"
+      ],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "copy-agent",
+      "name": "Copy Agent",
+      "description": "Escreve textos persuasivos e adequados ao tom da marca para todas as seções de um website. Adapta linguagem ao público-alvo e ao segmento de negócio.",
+      "capabilities": [
+        "hero-copy",
+        "feature-descriptions",
+        "cta-texts",
+        "testimonials",
+        "about-section",
+        "email-copy",
+        "product-descriptions"
+      ],
+      "input_schema": {
+        "produto": "string",
+        "publico": "string",
+        "tom": "string",
+        "segmento": "string",
+        "secoes": "array of strings",
+        "palavras_chave": "array of strings (opcional, vindo do seo-agent)",
+        "exemplos_referencia": "array of strings (opcional)"
+      },
+      "output_schema": {
+        "textos": {
+          "hero": {
+            "titulo": "string",
+            "subtitulo": "string",
+            "cta": "string"
+          },
+          "secoes": "object keyed by section name",
+          "meta": {
+            "title": "string",
+            "description": "string"
+          }
+        }
+      },
+      "system_prompt": "agents/copy-agent/system-prompt.md",
+      "skills": [
+        "agents/copy-agent/skills/copywriting/SKILL.md",
+        "agents/copy-agent/skills/tone-of-voice/SKILL.md",
+        "agents/copy-agent/skills/cta/SKILL.md",
+        "shared-skills/content-strategy/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "evals": "agents/copy-agent/EVALS.md",
+      "can_call": [],
+      "called_by": [
+        "orchestrator",
+        "webcraft-agent"
+      ]
+    },
+    {
+      "id": "seo-agent",
+      "name": "SEO Agent",
+      "description": "Realiza pesquisa de palavras-chave, gera meta tags otimizadas, estrutura dados schema.org e audita sites para SEO on-page.",
+      "capabilities": [
+        "keyword-research",
+        "meta-tags",
+        "schema-org",
+        "heading-structure",
+        "seo-audit",
+        "hreflang"
+      ],
+      "input_schema": {
+        "produto": "string",
+        "publico": "string",
+        "localizacao": "string (opcional)",
+        "idiomas": "array of strings (opcional)",
+        "url_atual": "string (opcional, para auditoria)",
+        "html": "string (opcional, para auditoria)"
+      },
+      "output_schema": {
+        "palavras_chave": "array of strings",
+        "meta_tags": {
+          "title": "string",
+          "description": "string",
+          "og": "object",
+          "twitter": "object"
+        },
+        "schema_json_ld": "string",
+        "hreflang": "array of objects",
+        "recomendacoes": "array of strings"
+      },
+      "system_prompt": "agents/seo-agent/system-prompt.md",
+      "skills": [
+        "agents/seo-agent/skills/keyword-research/SKILL.md",
+        "agents/seo-agent/skills/schema/SKILL.md",
+        "shared-skills/seo/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "evals": "agents/seo-agent/EVALS.md",
+      "can_call": [],
+      "called_by": [
+        "orchestrator",
+        "webcraft-agent"
+      ]
+    },
+    {
+      "id": "orchestrator",
+      "name": "Orchestrator",
+      "description": "Coordena todos os agentes do ecossistema. Interpreta o pedido do usuário, decide quais agentes acionar, em que ordem, e integra os outputs em uma entrega coesa.",
+      "capabilities": [
+        "task-decomposition",
+        "agent-routing",
+        "output-integration",
+        "parallel-execution",
+        "pipeline-execution"
+      ],
+      "input_schema": {
+        "pedido": "string (linguagem natural do usuário)",
+        "perfil_usuario": "string (dev | pm | designer)",
+        "contexto": "object (opcional)"
+      },
+      "output_schema": {
+        "resultado": "object (varia conforme tarefa)",
+        "agentes_usados": "array of agent ids",
+        "pipeline": "array of steps"
+      },
+      "system_prompt": "orchestrator/system-prompt.md",
+      "skills": [
+        "orchestrator/skills/routing/SKILL.md",
+        "orchestrator/skills/integration/SKILL.md",
+        "shared-skills/error-handling/SKILL.md",
+        "shared-skills/rate-limiting/SKILL.md"
+      ],
+      "evals": "orchestrator/EVALS.md",
+      "can_call": [
+        "webcraft-agent",
+        "copy-agent",
+        "seo-agent"
+      ],
+      "called_by": []
+    },
+    {
+      "id": "backend-agent",
+      "name": "Backend Agent",
+      "description": "Projeta e gera a camada de servidor: autenticação, APIs REST, schema de banco de dados e deploy em Cloudflare Workers ou Node.js.",
+      "capabilities": [
+        "auth",
+        "api-rest",
+        "database-schema",
+        "cloudflare-workers",
+        "supabase-auth"
+      ],
+      "input_schema": {
+        "projeto": "string",
+        "features": "array (auth | api | database | storage)",
+        "stack": "string (cloudflare-workers | node-express)"
+      },
+      "output_schema": {
+        "endpoints": "array",
+        "database": "object (migrations SQL)",
+        "env_vars": "array",
+        "arquivos": "array"
+      },
+      "system_prompt": "agents/backend-agent/system-prompt.md",
+      "skills": [
+        "agents/backend-agent/skills/auth/SKILL.md",
+        "agents/backend-agent/skills/database-schema/SKILL.md",
+        "shared-skills/security/SKILL.md",
+        "shared-skills/error-handling/SKILL.md",
+        "shared-skills/auth-patterns/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator",
+        "ecommerce-agent"
+      ]
+    },
+    {
+      "id": "ecommerce-agent",
+      "name": "E-commerce Agent",
+      "description": "Implementa pagamento real: Stripe, Mercado Pago, PagSeguro, PIX, boleto, parcelamento, webhooks e gestão de pedidos.",
+      "capabilities": [
+        "stripe",
+        "mercadopago",
+        "pagseguro",
+        "pix",
+        "boleto",
+        "parcelamento",
+        "webhooks"
+      ],
+      "input_schema": {
+        "gateway": "array (stripe | mercadopago | pagseguro)",
+        "features": "array (pix | boleto | credito | parcelamento)"
+      },
+      "output_schema": {
+        "endpoints": "array",
+        "env_vars": "array",
+        "webhook_urls": "array"
+      },
+      "system_prompt": "agents/ecommerce-agent/system-prompt.md",
+      "skills": [
+        "agents/ecommerce-agent/skills/payment-gateway/SKILL.md",
+        "shared-skills/payments/SKILL.md",
+        "shared-skills/security/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [
+        "backend-agent"
+      ],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "cms-agent",
+      "name": "CMS Agent",
+      "description": "Cria painel administrativo para o cliente gerenciar textos, produtos, pedidos e mídia. Suporta painel próprio (Supabase), Sanity e Contentful.",
+      "capabilities": [
+        "admin-panel",
+        "content-editing",
+        "product-management",
+        "order-management",
+        "media-upload",
+        "sanity",
+        "contentful"
+      ],
+      "input_schema": {
+        "abordagem": "string (painel-proprio | sanity | contentful)",
+        "modulos": "array (produtos | pedidos | conteudo | usuarios | configuracoes)"
+      },
+      "output_schema": {
+        "url_admin": "string",
+        "arquivos": "array",
+        "instrucoes_cliente": "string"
+      },
+      "system_prompt": "agents/cms-agent/system-prompt.md",
+      "skills": [
+        "agents/cms-agent/skills/admin-ui/SKILL.md",
+        "shared-skills/cms-integration/SKILL.md",
+        "shared-skills/security/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "memory-agent",
+      "name": "Memory Agent",
+      "description": "Mantém contexto do cliente entre sessões via Supabase/D1.",
+      "capabilities": [
+        "context-persistence",
+        "brand-recall",
+        "project-history"
+      ],
+      "input_schema": {
+        "operacao": "string",
+        "client_id": "string",
+        "data": "object"
+      },
+      "output_schema": {
+        "client": "object",
+        "projects": "array",
+        "memory_hints": "object"
+      },
+      "system_prompt": "agents/memory-agent/system-prompt.md",
+      "skills": [
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "design-agent",
+      "name": "Design Agent",
+      "description": "Define tokens visuais, direção de marca, tipografia e sistema de design.",
+      "capabilities": [
+        "visual-direction",
+        "token-system",
+        "typography",
+        "uiux-pro",
+        "taste",
+        "dark-mode"
+      ],
+      "input_schema": {
+        "produto": "string",
+        "segmento": "string",
+        "tom": "string",
+        "publico": "string"
+      },
+      "output_schema": {
+        "design_brief": "object",
+        "css_variables": "string",
+        "taste_md": "string"
+      },
+      "system_prompt": "agents/design-agent/system-prompt.md",
+      "skills": [
+        "agents/design-agent/skills/visual-direction/SKILL.md",
+        "agents/design-agent/skills/token-system/SKILL.md",
+        "agents/design-agent/skills/typography/SKILL.md",
+        "agents/design-agent/skills/uiux-pro/SKILL.md",
+        "agents/design-agent/skills/taste/SKILL.md",
+        "shared-skills/brand-guide/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "content-agent",
+      "name": "Content Agent",
+      "description": "Pesquisa e especifica assets de mídia: imagens, ícones, ilustrações.",
+      "capabilities": [
+        "image-research",
+        "icon-selection",
+        "media-spec"
+      ],
+      "input_schema": {
+        "produto": "string",
+        "segmento": "string",
+        "secoes": "array",
+        "design_brief": "object"
+      },
+      "output_schema": {
+        "assets": "object",
+        "icones": "object",
+        "recomendacoes": "array"
+      },
+      "system_prompt": "agents/content-agent/system-prompt.md",
+      "skills": [],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "qa-agent",
+      "name": "QA Agent",
+      "description": "Valida HTML, CSS, acessibilidade, SEO, performance e segurança antes da entrega.",
+      "capabilities": [
+        "html-validation",
+        "accessibility-audit",
+        "seo-check",
+        "performance-check",
+        "security-check"
+      ],
+      "input_schema": {
+        "html": "string",
+        "css": "string",
+        "js": "string"
+      },
+      "output_schema": {
+        "status": "string",
+        "score": "number",
+        "issues": "array",
+        "passed_checks": "array"
+      },
+      "system_prompt": "agents/qa-agent/system-prompt.md",
+      "skills": [
+        "agents/qa-agent/skills/checklist/SKILL.md",
+        "shared-skills/security/SKILL.md",
+        "shared-skills/output-validation/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
+      "id": "feedback-agent",
+      "name": "Feedback Agent",
+      "description": "Coleta, classifica e encaminha feedback do cliente. Analisa padrões para melhoria contínua.",
+      "capabilities": [
+        "feedback-classification",
+        "pattern-analysis",
+        "skill-improvement-suggestions"
+      ],
+      "input_schema": {
+        "modo": "string",
+        "feedback_bruto": "string",
+        "projeto_id": "string"
+      },
+      "output_schema": {
+        "classificacao": "array",
+        "agente_responsavel": "string",
+        "acao_recomendada": "string"
+      },
+      "system_prompt": "agents/feedback-agent/system-prompt.md",
+      "skills": [
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    }
+  ],
+  "shared_skills": [
+    "shared-skills/frontend-design/SKILL.md",
+    "shared-skills/seo/SKILL.md",
+    "cms-integration",
+    "shared-skills/analytics/SKILL.md",
+    "shared-skills/error-handling/SKILL.md",
+    "shared-skills/forms-backend/SKILL.md",
+    "shared-skills/acessibilidade/SKILL.md",
+    "shared-skills/ab-testing/SKILL.md",
+    "payments",
+    "shared-skills/performance/SKILL.md",
+    "auth-patterns",
+    "shared-skills/content-strategy/SKILL.md",
+    "shared-skills/output-validation/SKILL.md",
+    "shared-skills/brand-guide/SKILL.md",
+    "shared-skills/rate-limiting/SKILL.md"
+  ],
+  "pipelines": {
+    "site-completo": [
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent"
+    ],
+    "site-rapido": [
+      "webcraft-agent"
+    ],
+    "auditoria-seo": [
+      "seo-agent"
+    ],
+    "redesign-textos": [
+      "copy-agent",
+      "webcraft-agent"
+    ],
+    "ecommerce-completo": [
+      "memory-agent",
+      "design-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "backend-agent",
+      "ecommerce-agent",
+      "cms-agent",
+      "qa-agent",
+      "feedback-agent"
+    ],
+    "site-com-cms": [
+      "memory-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "backend-agent",
+      "cms-agent",
+      "qa-agent"
+    ],
+    "backend-apenas": [
+      "backend-agent",
+      "qa-agent"
+    ],
+    "adicionar-pagamento": [
+      "ecommerce-agent",
+      "qa-agent"
+    ],
+    "adicionar-cms": [
+      "cms-agent",
+      "qa-agent"
+    ],
+    "site-pro-max": [
+      "memory-agent",
+      "design-agent",
+      "content-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "qa-agent",
+      "feedback-agent"
+    ]
+  },
+  "features": {
+    "framer_motion": {
+      "descricao": "Animações React de alta qualidade",
+      "skill": "agents/webcraft-agent/skills/motion/SKILL.md",
+      "requer": "React ou Next.js"
+    },
+    "uiux_pro_max": {
+      "descricao": "Design system avançado, motion design, dark mode real",
+      "skill": "agents/design-agent/skills/uiux-pro/SKILL.md",
+      "requer": "qualquer stack"
+    },
+    "21st_dev": {
+      "descricao": "Componentes UI de alto nível adaptados ao design system",
+      "skill": "agents/webcraft-agent/skills/components/SKILL.md",
+      "requer": "React ou Next.js"
+    },
+    "impeccable": {
+      "descricao": "23 comandos de design — audit, polish, typeset, animate e mais",
+      "install": "npx skills add pbakaus/impeccable",
+      "skill": "agents/webcraft-agent/skills/impeccable/SKILL.md",
+      "acionar": "WebCraft Agent + QA Agent",
+      "quando": "Todo projeto — /teach no onboarding, /audit no QA, /polish na entrega"
+    },
+    "taste": {
+      "descricao": "Regras de julgamento estético por projeto — anti-slop + dials VARIANCE/MOTION/DENSITY",
+      "install": "npx skills add https://github.com/Leonxlnx/taste-skill",
+      "skill": "agents/design-agent/skills/taste/SKILL.md",
+      "acionar": "Design Agent",
+      "quando": "Antes de qualquer geração — define o padrão estético do projeto",
+      "variantes": [
+        "taste-skill",
+        "soft-skill",
+        "minimalist-skill",
+        "brutalist-skill",
+        "redesign-skill",
+        "output-skill",
+        "stitch-skill"
+      ]
+    }
+  }
+}

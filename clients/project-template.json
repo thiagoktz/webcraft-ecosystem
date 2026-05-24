@@ -1,0 +1,62 @@
+{
+  "_schema": "webcraft-project-v1",
+  "_created_at": null,
+  "_updated_at": null,
+
+  "identity": {
+    "project_id": null,
+    "client_id": null,
+    "nome": null,
+    "tipo": null,
+    "descricao": null
+  },
+
+  "execution": {
+    "pipeline": null,
+    "status": "pendente",
+    "agentes_usados": [],
+    "iteracoes": 0,
+    "max_iteracoes": 5,
+    "iniciado_em": null,
+    "entregue_em": null,
+    "aprovado_em": null
+  },
+
+  "brief": {
+    "produto": null,
+    "publico": null,
+    "tom": null,
+    "stack": null,
+    "secoes": [],
+    "referencias": [],
+    "restricoes": []
+  },
+
+  "outputs": {
+    "versions": [],
+    "current_version": null,
+    "deploy_url": null,
+    "arquivos": []
+  },
+
+  "quality": {
+    "qa_score_historico": [],
+    "qa_score_final": null,
+    "issues_criticos_resolvidos": 0,
+    "lighthouse_score": null
+  },
+
+  "feedback": {
+    "logs": [],
+    "status_final": null,
+    "nps": null
+  },
+
+  "seo": {
+    "palavras_chave": [],
+    "meta_title": null,
+    "meta_description": null,
+    "schema_type": null,
+    "indexado": false
+  }
+}

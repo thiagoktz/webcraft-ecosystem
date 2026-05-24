@@ -1,0 +1,222 @@
+{
+  "ecosystem": {
+    "id": "webcraft-ecosystem",
+    "name": "WebCraft Agent Ecosystem",
+    "version": "2.0.0",
+    "description": "Ecossistema multi-agente para desenvolvimento de websites profissionais",
+    "maintainer": "thiagoktz",
+    "repository": "https://github.com/thiagoktz/webcraft-ecosystem",
+    "clients_repository": "https://github.com/thiagoktz/webcraft-clients",
+    "created_at": "2026-05-23",
+    "updated_at": "2026-05-23"
+  },
+  "capabilities": [
+    "site-institucional",
+    "landing-page",
+    "portfolio",
+    "ecommerce-lite",
+    "dashboard",
+    "multilingual",
+    "seo-audit",
+    "redesign-textos"
+  ],
+  "agents": {
+    "total": 9,
+    "list": [
+      {
+        "id": "orchestrator",
+        "role": "Coordena todos os agentes e decide pipelines",
+        "entry_point": "orchestrator/system-prompt.md"
+      },
+      {
+        "id": "memory-agent",
+        "role": "Mantém contexto do cliente entre sessões",
+        "entry_point": "agents/memory-agent/system-prompt.md"
+      },
+      {
+        "id": "design-agent",
+        "role": "Define tokens visuais e direção de marca",
+        "entry_point": "agents/design-agent/system-prompt.md"
+      },
+      {
+        "id": "content-agent",
+        "role": "Pesquisa e especifica assets de mídia",
+        "entry_point": "agents/content-agent/system-prompt.md"
+      },
+      {
+        "id": "seo-agent",
+        "role": "Palavras-chave, meta tags e schema.org",
+        "entry_point": "agents/seo-agent/system-prompt.md"
+      },
+      {
+        "id": "copy-agent",
+        "role": "Textos persuasivos por seção",
+        "entry_point": "agents/copy-agent/system-prompt.md"
+      },
+      {
+        "id": "webcraft-agent",
+        "role": "Gera HTML/CSS/JS do site",
+        "entry_point": "agents/webcraft/system-prompt.md"
+      },
+      {
+        "id": "qa-agent",
+        "role": "Valida qualidade antes da entrega",
+        "entry_point": "agents/qa-agent/system-prompt.md"
+      },
+      {
+        "id": "feedback-agent",
+        "role": "Coleta e analisa feedback do cliente",
+        "entry_point": "agents/feedback-agent/system-prompt.md"
+      }
+    ]
+  },
+  "pipelines": {
+    "site-completo": [
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent"
+    ],
+    "site-rapido": [
+      "webcraft-agent"
+    ],
+    "auditoria-seo": [
+      "seo-agent"
+    ],
+    "redesign-textos": [
+      "copy-agent",
+      "webcraft-agent"
+    ],
+    "ecommerce-completo": [
+      "memory-agent",
+      "design-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "backend-agent",
+      "ecommerce-agent",
+      "cms-agent",
+      "qa-agent",
+      "feedback-agent"
+    ],
+    "site-com-cms": [
+      "memory-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "backend-agent",
+      "cms-agent",
+      "qa-agent"
+    ],
+    "backend-apenas": [
+      "backend-agent",
+      "qa-agent"
+    ],
+    "adicionar-pagamento": [
+      "ecommerce-agent",
+      "qa-agent"
+    ],
+    "adicionar-cms": [
+      "cms-agent",
+      "qa-agent"
+    ],
+    "site-pro-max": [
+      "memory-agent",
+      "design-agent",
+      "content-agent",
+      "seo-agent",
+      "copy-agent",
+      "webcraft-agent",
+      "qa-agent",
+      "feedback-agent"
+    ]
+  },
+  "shared_skills": [
+    "frontend-design",
+    "acessibilidade",
+    "seo",
+    "analytics",
+    "performance",
+    "error-handling",
+    "output-validation",
+    "brand-guide",
+    "content-strategy",
+    "ab-testing",
+    "security",
+    "forms-backend",
+    "rate-limiting"
+  ],
+  "connectors": {
+    "active": [
+      "vercel",
+      "supabase",
+      "google-drive",
+      "gmail",
+      "cloudflare"
+    ],
+    "available": [
+      "netlify",
+      "mailerlite",
+      "calendly",
+      "hubspot",
+      "webflow",
+      "wordpress",
+      "jotform",
+      "wix"
+    ]
+  },
+  "infrastructure": {
+    "database": {
+      "provider": "supabase",
+      "fallback": "cloudflare-d1",
+      "tables": [
+        "clients",
+        "projects",
+        "feedback_logs",
+        "sessions"
+      ]
+    },
+    "storage": {
+      "provider": "cloudflare-r2",
+      "purpose": "assets de mídia dos projetos"
+    },
+    "cache": {
+      "provider": "cloudflare-kv",
+      "purpose": "sessões ativas com TTL 24h"
+    },
+    "deploy": {
+      "providers": [
+        "vercel",
+        "netlify",
+        "cloudflare-pages"
+      ]
+    }
+  },
+  "data_model": {
+    "client_schema": "clients/client-template.json",
+    "project_schema": "clients/project-template.json"
+  },
+  "interoperability": {
+    "protocol": "json-rpc",
+    "handshake_endpoint": "ecosystem.json",
+    "context_format": "memory-agent schema v1",
+    "supported_integrations": [
+      "github",
+      "notion",
+      "supabase",
+      "google-drive",
+      "slack"
+    ]
+  },
+  "evals": {
+    "total_criteria": 196,
+    "approval_threshold": 0.85,
+    "ci_cd": ".github/workflows/evals.yml",
+    "last_run": null,
+    "last_score": null
+  },
+  "onboarding": {
+    "new_client_script": "scripts/new-client.mjs",
+    "client_template": "clients/client-template.json",
+    "estimated_setup_min": 2
+  }
+}

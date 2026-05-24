@@ -1,0 +1,90 @@
+{
+  "_schema": "webcraft-client-v1",
+  "_created_at": null,
+  "_updated_at": null,
+  "_ecosystem_version": "2.0.0",
+
+  "identity": {
+    "client_id": null,
+    "nome": null,
+    "empresa": null,
+    "segmento": null,
+    "site_atual": null,
+    "email_contato": null,
+    "telefone": null,
+    "localizacao": {
+      "cidade": null,
+      "estado": null,
+      "pais": "BR"
+    }
+  },
+
+  "profile": {
+    "tipo_usuario": null,
+    "nivel_tecnico": null,
+    "ritmo_preferido": null,
+    "autonomia_agente": "alto",
+    "idioma": "pt-BR"
+  },
+
+  "brand": {
+    "nome_marca": null,
+    "slogan": null,
+    "descricao_negocio": null,
+    "publico_alvo": null,
+    "proposta_de_valor": null,
+    "cores": {
+      "primaria": null,
+      "secundaria": null,
+      "acento": null,
+      "fundo": null,
+      "texto": null
+    },
+    "tipografia": {
+      "titulo": null,
+      "corpo": null
+    },
+    "logo_url": null,
+    "tom_de_voz": {
+      "tom_principal": null,
+      "adjetivos": [],
+      "palavras_chave": [],
+      "evitar": [],
+      "exemplos_aprovados": []
+    },
+    "design_brief": null,
+    "referencias_visuais": [],
+    "referencias_negativas": []
+  },
+
+  "technical": {
+    "stack_preferida": "HTML/CSS/JS",
+    "deploy_preferido": "vercel",
+    "dominio": null,
+    "integrações_ativas": [],
+    "cms": null,
+    "analytics_id": null
+  },
+
+  "history": {
+    "total_projetos": 0,
+    "total_iteracoes": 0,
+    "score_medio_qa": null,
+    "satisfacao_media": null,
+    "ultima_sessao": null,
+    "feedback_recorrente": {
+      "positivo": [],
+      "negativo": [],
+      "a_evitar": []
+    }
+  },
+
+  "projects": [],
+
+  "memory_hints": {
+    "gosta_de": [],
+    "nao_gosta_de": [],
+    "padroes_aprovados": [],
+    "notas_livres": []
+  }
+}
