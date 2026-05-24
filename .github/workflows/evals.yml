@@ -1,0 +1,411 @@
+name: "Avaliação Automática de Skills (EVALS)"
+
+on:
+  pull_request:
+    paths:
+      - "skills/**"
+      - "system-prompt.md"
+      - "EVALS.md"
+  push:
+    branches:
+      - main
+    paths:
+      - "skills/**"
+      - "system-prompt.md"
+
+jobs:
+  # ──────────────────────────────────────────
+  # JOB 1: Validação estrutural dos arquivos
+  # ──────────────────────────────────────────
+  validate-structure:
+    name: "Validar estrutura dos skills"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verificar arquivos obrigatórios
+        run: |
+          echo "🔍 Verificando estrutura do repositório..."
+
+          REQUIRED_FILES=(
+            "PRD.md"
+            "SDD.md"
+            "system-prompt.md"
+            "EVALS.md"
+            "skills/intake/SKILL.md"
+            "skills/feedback-loop/SKILL.md"
+            "skills/deploy/SKILL.md"
+            "skills/seo/SKILL.md"
+            "skills/acessibilidade/SKILL.md"
+            "skills/ecommerce-lite/SKILL.md"
+            "skills/multilingual/SKILL.md"
+            "skills/performance/SKILL.md"
+            "skills/analytics/SKILL.md"
+          )
+
+          MISSING=0
+          for file in "${REQUIRED_FILES[@]}"; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Arquivo obrigatório não encontrado: $file"
+              MISSING=1
+            else
+              echo "✅ $file"
+            fi
+          done
+
+          if [ $MISSING -eq 1 ]; then
+            echo ""
+            echo "💥 Estrutura incompleta. Adicione os arquivos faltantes antes de fazer merge."
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ Estrutura do repositório válida."
+
+      - name: Verificar frontmatter dos skills
+        run: |
+          echo "🔍 Verificando frontmatter de cada SKILL.md..."
+
+          ERRORS=0
+          for skill_file in skills/*/SKILL.md; do
+            # Verificar se tem frontmatter (começa com ---)
+            if ! head -1 "$skill_file" | grep -q "^---$"; then
+              echo "❌ $skill_file: frontmatter ausente (deve começar com ---)"
+              ERRORS=1
+              continue
+            fi
+
+            # Verificar campos obrigatórios no frontmatter
+            for field in "name:" "description:"; do
+              if ! grep -q "^$field" "$skill_file"; then
+                echo "❌ $skill_file: campo '$field' ausente no frontmatter"
+                ERRORS=1
+              fi
+            done
+
+            echo "✅ $skill_file"
+          done
+
+          if [ $ERRORS -eq 1 ]; then
+            echo ""
+            echo "💥 Corrija os erros de frontmatter antes de fazer merge."
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ Todos os frontmatters válidos."
+
+      - name: Verificar tamanho mínimo dos skills
+        run: |
+          echo "🔍 Verificando conteúdo mínimo dos skills..."
+
+          MIN_LINES=20
+          ERRORS=0
+
+          for skill_file in skills/*/SKILL.md; do
+            LINES=$(wc -l < "$skill_file")
+            if [ "$LINES" -lt "$MIN_LINES" ]; then
+              echo "❌ $skill_file: apenas $LINES linhas (mínimo: $MIN_LINES)"
+              ERRORS=1
+            else
+              echo "✅ $skill_file ($LINES linhas)"
+            fi
+          done
+
+          if [ $ERRORS -eq 1 ]; then
+            exit 1
+          fi
+
+  # ──────────────────────────────────────────
+  # JOB 2: EVALS com Claude API
+  # ──────────────────────────────────────────
+  run-evals:
+    name: "Executar EVALS via Claude API"
+    runs-on: ubuntu-latest
+    needs: validate-structure
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Instalar dependências
+        run: npm install @anthropic-ai/sdk
+
+      - name: Executar EVALS
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          cat > run-evals.mjs << 'SCRIPT'
+          import Anthropic from '@anthropic-ai/sdk';
+          import fs from 'fs';
+          import path from 'path';
+
+          const client = new Anthropic();
+
+          // Carregar todos os skills
+          function loadSkills() {
+            const skillsDir = './skills';
+            const skills = {};
+            const dirs = fs.readdirSync(skillsDir);
+            for (const dir of dirs) {
+              const skillPath = path.join(skillsDir, dir, 'SKILL.md');
+              if (fs.existsSync(skillPath)) {
+                skills[dir] = fs.readFileSync(skillPath, 'utf8');
+              }
+            }
+            return skills;
+          }
+
+          // Carregar system prompt
+          const systemPrompt = fs.readFileSync('./system-prompt.md', 'utf8');
+          const skills = loadSkills();
+
+          const skillsContext = Object.entries(skills)
+            .map(([name, content]) => `## Skill: ${name}\n${content}`)
+            .join('\n\n---\n\n');
+
+          // Casos de teste
+          const testCases = [
+            {
+              skill: 'intake',
+              test: 'EVAL-01.1',
+              input: 'Quero um site para meu negócio de bolos artesanais.',
+              criteria: [
+                'Detecta ou assume perfil PM/Designer',
+                'Infere tipo de site adequado ao segmento',
+                'Não faz mais de 3 perguntas',
+                'Inicia geração ou apresenta plano de ação',
+                'Tom adequado ao segmento alimentício'
+              ]
+            },
+            {
+              skill: 'intake',
+              test: 'EVAL-01.2',
+              input: 'Preciso de uma landing page em React com Tailwind. Hero com CTA, seção de features e footer. Deploy no Vercel.',
+              criteria: [
+                'Detecta perfil desenvolvedor',
+                'Usa React e Tailwind conforme solicitado',
+                'Não faz perguntas desnecessárias sobre stack',
+                'Menciona ou planeja deploy no Vercel',
+                'Entrega código ou plano técnico'
+              ]
+            },
+            {
+              skill: 'seo',
+              test: 'EVAL-03.1',
+              input: 'Gera o head HTML completo para um site de escola de inglês chamada Speak Up em Campinas.',
+              criteria: [
+                'title entre 50-60 caracteres com palavra-chave',
+                'meta description entre 150-160 caracteres',
+                'Tags Open Graph presentes',
+                'link canonical presente',
+                'lang="pt-BR" no html'
+              ]
+            },
+            {
+              skill: 'acessibilidade',
+              test: 'EVAL-04.1',
+              input: 'Cria o header e nav de um site de ONG com skip link e landmarks semânticos corretos.',
+              criteria: [
+                'Skip link presente como primeiro elemento',
+                'header com role banner',
+                'nav com aria-label',
+                'main com role main',
+                'Ordem de foco lógica'
+              ]
+            },
+            {
+              skill: 'ecommerce-lite',
+              test: 'EVAL-06.1',
+              input: 'Cria a função de finalização de pedido pelo WhatsApp com o carrinho formatado.',
+              criteria: [
+                'Deep link wa.me gerado',
+                'Mensagem contém itens do carrinho',
+                'Inclui quantidades e valores',
+                'Total calculado corretamente',
+                'Link abre em nova aba'
+              ]
+            }
+          ];
+
+          // Executar cada teste
+          const results = [];
+          let totalCriteria = 0;
+          let passedCriteria = 0;
+
+          for (const testCase of testCases) {
+            console.log(`\n🧪 Executando ${testCase.test} (skill: ${testCase.skill})...`);
+
+            const skillContent = skills[testCase.skill] || '';
+
+            const response = await client.messages.create({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 2000,
+              system: `${systemPrompt}\n\n## Skills disponíveis\n\n${skillsContext}`,
+              messages: [{ role: 'user', content: testCase.input }]
+            });
+
+            const output = response.content.map(b => b.text || '').join('');
+
+            // Avaliar critérios
+            const evaluationPrompt = `
+Avalie se a resposta do agente atende cada critério abaixo.
+Para cada critério, responda apenas "PASS" ou "FAIL" e uma justificativa curta (1 linha).
+
+RESPOSTA DO AGENTE:
+${output}
+
+CRITÉRIOS:
+${testCase.criteria.map((c, i) => `${i + 1}. ${c}`).join('\n')}
+
+Responda em formato JSON:
+{
+  "resultados": [
+    { "criterio": "texto do critério", "resultado": "PASS" ou "FAIL", "justificativa": "..." }
+  ]
+}
+`;
+
+            const evalResponse = await client.messages.create({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 1000,
+              messages: [{ role: 'user', content: evaluationPrompt }]
+            });
+
+            let evalData;
+            try {
+              const evalText = evalResponse.content.map(b => b.text || '').join('');
+              const jsonMatch = evalText.match(/\{[\s\S]*\}/);
+              evalData = JSON.parse(jsonMatch[0]);
+            } catch {
+              evalData = { resultados: testCase.criteria.map(c => ({
+                criterio: c, resultado: 'ERROR', justificativa: 'Falha ao parsear avaliação'
+              }))};
+            }
+
+            const passed = evalData.resultados.filter(r => r.resultado === 'PASS').length;
+            const total = evalData.resultados.length;
+            const pct = Math.round((passed / total) * 100);
+
+            totalCriteria += total;
+            passedCriteria += passed;
+
+            results.push({
+              test: testCase.test,
+              skill: testCase.skill,
+              passed,
+              total,
+              percentage: pct,
+              approved: pct >= 80,
+              details: evalData.resultados
+            });
+
+            console.log(`  ${pct >= 80 ? '✅' : '❌'} ${passed}/${total} critérios (${pct}%)`);
+            evalData.resultados.forEach(r => {
+              console.log(`    ${r.resultado === 'PASS' ? '✅' : '❌'} ${r.criterio}`);
+              if (r.resultado === 'FAIL') console.log(`       → ${r.justificativa}`);
+            });
+          }
+
+          // Relatório final
+          const overallPct = Math.round((passedCriteria / totalCriteria) * 100);
+          const allPassed = results.every(r => r.approved);
+
+          console.log('\n' + '='.repeat(60));
+          console.log('📊 RELATÓRIO FINAL DE EVALS');
+          console.log('='.repeat(60));
+          console.log(`Total de critérios: ${totalCriteria}`);
+          console.log(`Aprovados: ${passedCriteria} (${overallPct}%)`);
+          console.log(`Reprovados: ${totalCriteria - passedCriteria}`);
+          console.log('');
+
+          results.forEach(r => {
+            console.log(`${r.approved ? '✅' : '❌'} [${r.test}] ${r.skill}: ${r.passed}/${r.total} (${r.percentage}%)`);
+          });
+
+          // Salvar relatório JSON
+          const report = {
+            timestamp: new Date().toISOString(),
+            commit: process.env.GITHUB_SHA || 'local',
+            overall: { total: totalCriteria, passed: passedCriteria, percentage: overallPct },
+            tests: results
+          };
+          fs.writeFileSync('eval-report.json', JSON.stringify(report, null, 2));
+          console.log('\n📄 Relatório salvo em eval-report.json');
+
+          if (!allPassed) {
+            console.log('\n💥 Um ou mais skills falharam nos EVALS. Corrija antes de fazer merge.');
+            process.exit(1);
+          } else {
+            console.log('\n🎉 Todos os EVALS passaram!');
+          }
+          SCRIPT
+
+          node run-evals.mjs
+
+      - name: Upload do relatório de EVALS
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report
+          path: eval-report.json
+          retention-days: 30
+
+  # ──────────────────────────────────────────
+  # JOB 3: Comentário automático no PR
+  # ──────────────────────────────────────────
+  comment-pr:
+    name: "Comentar resultado no PR"
+    runs-on: ubuntu-latest
+    needs: run-evals
+    if: github.event_name == 'pull_request' && always()
+
+    steps:
+      - name: Download do relatório
+        uses: actions/download-artifact@v4
+        with:
+          name: eval-report
+        continue-on-error: true
+
+      - name: Comentar no PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let body = '';
+
+            try {
+              const report = JSON.parse(fs.readFileSync('eval-report.json', 'utf8'));
+              const status = report.overall.percentage >= 80 ? '✅ APROVADO' : '❌ REPROVADO';
+
+              const rows = report.tests.map(t =>
+                `| ${t.approved ? '✅' : '❌'} | \`${t.skill}\` | ${t.test} | ${t.passed}/${t.total} | ${t.percentage}% |`
+              ).join('\n');
+
+              body = `## 🧪 Resultado dos EVALS
+
+**Status geral:** ${status} — ${report.overall.passed}/${report.overall.total} critérios (${report.overall.percentage}%)
+
+| | Skill | Teste | Critérios | % |
+|---|---|---|---|---|
+${rows}
+
+> Executado em \`${report.commit?.slice(0, 7) || 'local'}\` · ${new Date(report.timestamp).toLocaleString('pt-BR')}
+`;
+            } catch (e) {
+              body = '## 🧪 EVALS\n\n❌ Não foi possível gerar o relatório de EVALS. Verifique os logs do workflow.';
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
