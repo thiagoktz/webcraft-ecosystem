@@ -2,71 +2,91 @@
   "ecosystem": {
     "id": "webcraft-ecosystem",
     "name": "WebCraft Agent Ecosystem",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Ecossistema multi-agente para desenvolvimento de websites profissionais",
     "maintainer": "thiagoktz",
     "repository": "https://github.com/thiagoktz/webcraft-ecosystem",
     "clients_repository": "https://github.com/thiagoktz/webcraft-clients",
     "created_at": "2026-05-23",
-    "updated_at": "2026-05-23"
+    "updated_at": "2026-05-24"
   },
   "capabilities": [
     "site-institucional",
     "landing-page",
     "portfolio",
+    "ecommerce-completo",
     "ecommerce-lite",
     "dashboard",
+    "site-com-cms",
     "multilingual",
     "seo-audit",
-    "redesign-textos"
+    "redesign-textos",
+    "backend-apenas",
+    "adicionar-pagamento",
+    "adicionar-cms"
   ],
   "agents": {
-    "total": 9,
+    "total": 12,
     "list": [
       {
         "id": "orchestrator",
-        "role": "Coordena todos os agentes e decide pipelines",
+        "role": "Coordena todos os agentes do ecossistema",
         "entry_point": "orchestrator/system-prompt.md"
       },
       {
         "id": "memory-agent",
-        "role": "Mantém contexto do cliente entre sessões",
+        "role": "Mantém contexto do cliente entre sessões via Supabase/D1",
         "entry_point": "agents/memory-agent/system-prompt.md"
       },
       {
         "id": "design-agent",
-        "role": "Define tokens visuais e direção de marca",
+        "role": "Define tokens visuais, direção de marca, tipografia e sistema de design",
         "entry_point": "agents/design-agent/system-prompt.md"
       },
       {
         "id": "content-agent",
-        "role": "Pesquisa e especifica assets de mídia",
+        "role": "Pesquisa e especifica assets de mídia: imagens, ícones, ilustrações",
         "entry_point": "agents/content-agent/system-prompt.md"
       },
       {
         "id": "seo-agent",
-        "role": "Palavras-chave, meta tags e schema.org",
+        "role": "Realiza pesquisa de palavras-chave, gera meta tags otimizadas, estrutura dados schema",
         "entry_point": "agents/seo-agent/system-prompt.md"
       },
       {
         "id": "copy-agent",
-        "role": "Textos persuasivos por seção",
+        "role": "Escreve textos persuasivos e adequados ao tom da marca para todas as seções de um website",
         "entry_point": "agents/copy-agent/system-prompt.md"
       },
       {
         "id": "webcraft-agent",
-        "role": "Gera HTML/CSS/JS do site",
-        "entry_point": "agents/webcraft/system-prompt.md"
+        "role": "Desenvolve websites completos a partir de briefings em linguagem natural",
+        "entry_point": "agents/webcraft-agent/system-prompt.md"
       },
       {
         "id": "qa-agent",
-        "role": "Valida qualidade antes da entrega",
+        "role": "Valida HTML, CSS, acessibilidade, SEO, performance e segurança antes da entrega",
         "entry_point": "agents/qa-agent/system-prompt.md"
       },
       {
         "id": "feedback-agent",
-        "role": "Coleta e analisa feedback do cliente",
+        "role": "Coleta, classifica e encaminha feedback do cliente",
         "entry_point": "agents/feedback-agent/system-prompt.md"
+      },
+      {
+        "id": "backend-agent",
+        "role": "Projeta e gera a camada de servidor: autenticação, APIs REST, schema de banco de dados e deploy em Cloudflare Workers ou Node",
+        "entry_point": "agents/backend-agent/system-prompt.md"
+      },
+      {
+        "id": "ecommerce-agent",
+        "role": "Implementa pagamento real: Stripe, Mercado Pago, PagSeguro, PIX, boleto, parcelamento, webhooks e gestão de pedidos",
+        "entry_point": "agents/ecommerce-agent/system-prompt.md"
+      },
+      {
+        "id": "cms-agent",
+        "role": "Cria painel administrativo para o cliente gerenciar textos, produtos, pedidos e mídia",
+        "entry_point": "agents/cms-agent/system-prompt.md"
       }
     ]
   },
@@ -74,17 +94,20 @@
     "site-completo": [
       "seo-agent",
       "copy-agent",
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "site-rapido": [
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "auditoria-seo": [
       "seo-agent"
     ],
     "redesign-textos": [
       "copy-agent",
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "ecommerce-completo": [
       "memory-agent",
@@ -131,19 +154,20 @@
     ]
   },
   "shared_skills": [
-    "frontend-design",
-    "acessibilidade",
-    "seo",
-    "analytics",
-    "performance",
-    "error-handling",
-    "output-validation",
-    "brand-guide",
-    "content-strategy",
     "ab-testing",
-    "security",
+    "acessibilidade",
+    "auth-patterns",
+    "brand-guide",
+    "cms-integration",
+    "content-strategy",
+    "error-handling",
     "forms-backend",
-    "rate-limiting"
+    "frontend-design",
+    "output-validation",
+    "payments",
+    "rate-limiting",
+    "security",
+    "seo"
   ],
   "connectors": {
     "active": [
@@ -208,11 +232,12 @@
     ]
   },
   "evals": {
-    "total_criteria": 196,
+    "total_criteria": 312,
     "approval_threshold": 0.85,
     "ci_cd": ".github/workflows/evals.yml",
-    "last_run": null,
-    "last_score": null
+    "last_run": "2026-05-24",
+    "last_score": null,
+    "note": "Total atualizado após auditoria. Score depende do workflow CI funcionar."
   },
   "onboarding": {
     "new_client_script": "scripts/new-client.mjs",

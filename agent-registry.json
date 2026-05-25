@@ -1,6 +1,6 @@
 {
-  "version": "1.0",
-  "updated": "2026-05-23",
+  "version": "1.1",
+  "updated": "2026-05-24",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
     {
@@ -185,9 +185,17 @@
       ],
       "evals": "orchestrator/EVALS.md",
       "can_call": [
-        "webcraft-agent",
+        "backend-agent",
+        "cms-agent",
+        "content-agent",
         "copy-agent",
-        "seo-agent"
+        "design-agent",
+        "ecommerce-agent",
+        "feedback-agent",
+        "memory-agent",
+        "qa-agent",
+        "seo-agent",
+        "webcraft-agent"
       ],
       "called_by": []
     },
@@ -454,37 +462,39 @@
     }
   ],
   "shared_skills": [
-    "shared-skills/frontend-design/SKILL.md",
-    "shared-skills/seo/SKILL.md",
-    "cms-integration",
-    "shared-skills/analytics/SKILL.md",
+    "shared-skills/ab-testing/SKILL.md",
+    "shared-skills/acessibilidade/SKILL.md",
+    "shared-skills/auth-patterns/SKILL.md",
+    "shared-skills/brand-guide/SKILL.md",
+    "shared-skills/cms-integration/SKILL.md",
+    "shared-skills/content-strategy/SKILL.md",
     "shared-skills/error-handling/SKILL.md",
     "shared-skills/forms-backend/SKILL.md",
-    "shared-skills/acessibilidade/SKILL.md",
-    "shared-skills/ab-testing/SKILL.md",
-    "payments",
-    "shared-skills/performance/SKILL.md",
-    "auth-patterns",
-    "shared-skills/content-strategy/SKILL.md",
+    "shared-skills/frontend-design/SKILL.md",
     "shared-skills/output-validation/SKILL.md",
-    "shared-skills/brand-guide/SKILL.md",
-    "shared-skills/rate-limiting/SKILL.md"
+    "shared-skills/payments/SKILL.md",
+    "shared-skills/rate-limiting/SKILL.md",
+    "shared-skills/security/SKILL.md",
+    "shared-skills/seo/SKILL.md"
   ],
   "pipelines": {
     "site-completo": [
       "seo-agent",
       "copy-agent",
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "site-rapido": [
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "auditoria-seo": [
       "seo-agent"
     ],
     "redesign-textos": [
       "copy-agent",
-      "webcraft-agent"
+      "webcraft-agent",
+      "qa-agent"
     ],
     "ecommerce-completo": [
       "memory-agent",

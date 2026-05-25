@@ -1,44 +1,74 @@
-# WebCraft — Ecossistema Multi-Agente (Completo)
+# WebCraft — Ecossistema Multi-Agente
 
-Repositório central com orquestrador, 8 agentes especializados, 17 skills compartilhados e infraestrutura de logging, versionamento e dashboard.
+Repositório central com Orchestrator, **12 agentes especializados**, **14 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+
+**Versão:** 2.1.0 · **Atualizado:** 24 de maio de 2026
 
 ---
 
-## Arquitetura completa
+## Arquitetura
 
 ```
 Usuário
    ↓
-[Memory Agent]  ← recupera contexto do cliente
+[Memory Agent]     ← recupera contexto do cliente
    ↓
-[Orchestrator]  ← lê registry, define pipeline
+[Orchestrator]     ← lê registry, escolhe pipeline
    ↓
-[Design Agent]  ← tokens visuais e brand guide
+[Design Agent]     ← tokens visuais, TASTE.md, dark mode
    ↓
-[Content Agent] ← imagens, ícones, mídias
+[Content Agent]    ← imagens, ícones, mídias
    ↓
-[SEO Agent]     ← palavras-chave e meta tags
+[SEO Agent]        ← palavras-chave, meta tags, schema.org
    ↓
-[Copy Agent]    ← textos por seção
+[Copy Agent]       ← textos por seção em JSON
    ↓
-[WebCraft Agent]← HTML/CSS/JS integrado
+[WebCraft Agent]   ← HTML/CSS/JS final
    ↓
-[QA Agent]      ← validação completa
+[Backend Agent]    ← API REST, auth, banco (quando aplicável)
    ↓
-[Feedback Agent]← coleta feedback, alimenta melhoria
+[E-commerce Agent] ← Stripe/Mercado Pago/PIX (quando aplicável)
    ↓
-[Memory Agent]  ← salva contexto e histórico
+[CMS Agent]        ← painel admin (quando aplicável)
+   ↓
+[QA Agent]         ← validação 7 camadas (sempre)
+   ↓
+[Feedback Agent]   ← coleta feedback, melhoria contínua
+   ↓
+[Memory Agent]     ← persiste histórico no Supabase
 ```
+
+---
+
+## Os 12 agentes
+
+| Agente | Papel | Skills próprios |
+|---|---|---|
+| `orchestrator` | Coordena todos, decide pipelines | routing, integration |
+| `memory-agent` | Contexto entre sessões (Supabase) | — |
+| `design-agent` | Tokens visuais, TASTE.md, dark mode | visual-direction, token-system, typography, uiux-pro, taste |
+| `content-agent` | Imagens, ícones, mídias | — |
+| `seo-agent` | Keywords, meta tags, schema.org | keyword-research, schema |
+| `copy-agent` | Textos por seção em JSON | copywriting, cta, tone-of-voice |
+| `webcraft-agent` | HTML/CSS/JS final | motion, components, impeccable, intake, deploy, ecommerce-lite, multilingual, performance, feedback-loop |
+| `qa-agent` | Valida 7 camadas antes da entrega | checklist |
+| `feedback-agent` | Classifica feedback, melhoria contínua | — |
+| `backend-agent` | API REST, auth, banco | auth, database-schema |
+| `ecommerce-agent` | Stripe, Mercado Pago, PagSeguro, PIX | payment-gateway |
+| `cms-agent` | Painel admin para o cliente editar | admin-ui |
 
 ---
 
 ## Estrutura do repositório
 
 ```
-multi-agent-repo/
+webcraft-ecosystem/
   ├── README.md
-  ├── agent-registry.json
+  ├── HANDOFF.md
+  ├── ACTIVATE.md
   ├── EXEMPLO-PIPELINE.md
+  ├── ecosystem.json
+  ├── agent-registry.json
   │
   ├── orchestrator/
   │     ├── system-prompt.md
@@ -47,67 +77,157 @@ multi-agent-repo/
   │           └── integration/SKILL.md
   │
   ├── agents/
-  │     ├── webcraft/          # Gera HTML/CSS/JS
-  │     ├── copy-agent/        # Escreve textos
-  │     ├── seo-agent/         # Palavras-chave e meta tags
-  │     ├── design-agent/      # Tokens visuais e brand guide
-  │     ├── content-agent/     # Imagens, ícones, mídias
-  │     ├── qa-agent/          # Validação de qualidade
-  │     ├── feedback-agent/    # Coleta e analisa feedback
-  │     └── memory-agent/      # Contexto entre sessões
+  │     ├── webcraft-agent/      # HTML/CSS/JS, 11 skills incluindo Impeccable
+  │     ├── copy-agent/          # Textos persuasivos
+  │     ├── seo-agent/           # Keywords e meta tags
+  │     ├── design-agent/        # Tokens, Taste Skill, dark mode
+  │     ├── content-agent/       # Imagens, ícones, mídias
+  │     ├── qa-agent/            # Validação 7 camadas
+  │     ├── feedback-agent/      # Classifica feedback
+  │     ├── memory-agent/        # Contexto via Supabase
+  │     ├── backend-agent/       # API, auth, database-schema
+  │     ├── ecommerce-agent/     # Pagamentos
+  │     └── cms-agent/           # Painel admin
   │
-  ├── shared-skills/
-  │     ├── frontend-design/   # UI de qualidade
-  │     ├── acessibilidade/    # WCAG 2.1 AA
-  │     ├── seo/               # SEO on-page
-  │     ├── analytics/         # GA4 e eventos
-  │     ├── performance/       # Core Web Vitals
-  │     ├── error-handling/    # Erros e fallbacks
-  │     ├── output-validation/ # Schemas JSON entre agentes
-  │     ├── brand-guide/       # Identidade de marca
-  │     ├── content-strategy/  # Hierarquia de mensagens
-  │     ├── ab-testing/        # Testes de conversão
-  │     ├── security/          # Headers e sanitização
-  │     ├── forms-backend/     # Netlify/Formspree/EmailJS
-  │     └── rate-limiting/     # Circuit breaker e throttle
+  ├── shared-skills/             # 14 skills compartilhados
+  │     ├── ab-testing/          # Testes de conversão
+  │     ├── acessibilidade/      # WCAG 2.1 AA
+  │     ├── auth-patterns/       # JWT, OAuth, sessions
+  │     ├── brand-guide/         # Identidade de marca
+  │     ├── cms-integration/     # Sanity, Contentful, Supabase
+  │     ├── content-strategy/    # Hierarquia de mensagens
+  │     ├── error-handling/      # Erros e fallbacks
+  │     ├── forms-backend/       # Netlify/Formspree/EmailJS
+  │     ├── frontend-design/     # UI de qualidade
+  │     ├── output-validation/   # Schemas JSON entre agentes
+  │     ├── payments/            # Patterns de gateway
+  │     ├── rate-limiting/       # Circuit breaker e throttle
+  │     ├── security/            # Headers e sanitização
+  │     └── seo/                 # SEO on-page
   │
-  └── infra/
-        ├── logging/           # Formato padrão de logs
-        ├── versioning/        # Histórico de outputs
-        └── dashboard/         # Saúde dos agentes
+  ├── connectors/                # MCPs ativos
+  │     ├── cloudflare/
+  │     ├── gmail/
+  │     ├── google-drive/
+  │     ├── supabase/
+  │     └── vercel/
+  │
+  ├── evals/                     # 312 critérios distribuídos
+  │     ├── EVALS.md
+  │     ├── agents/              # 11 arquivos, um por agente
+  │     ├── pipelines/pipelines.md
+  │     └── shared-skills/shared-skills.md
+  │
+  ├── clients/                   # Templates e exemplos
+  │     ├── client-template.json
+  │     ├── project-template.json
+  │     └── REVISAO-exemplo.md
+  │
+  ├── scripts/
+  │     ├── new-client.mjs
+  │     ├── import-client.mjs
+  │     └── setup-database.sql
+  │
+  ├── infra/
+  │     ├── logging/
+  │     ├── versioning/
+  │     └── dashboard/
+  │
+  └── .github/workflows/evals.yml  # CI/CD do ecossistema
 ```
 
 ---
 
-## Pipelines disponíveis
+## Os 10 pipelines
 
-| Pipeline | Agentes | Resultado |
+| Pipeline | Sequência | Caso de uso |
 |---|---|---|
-| `site-premium` | Memory→Design→Content→SEO→Copy→WebCraft→QA→Feedback | Máxima qualidade |
-| `site-completo` | Memory→SEO→Copy→WebCraft→QA | Qualidade alta, mais rápido |
-| `site-rapido` | WebCraft→QA | Protótipo em minutos |
-| `redesign-textos` | Copy→WebCraft→QA | Novos textos em site existente |
+| `site-completo` | SEO → Copy → WebCraft → QA | Padrão recomendado |
+| `site-rapido` | WebCraft → QA | Protótipo em minutos |
+| `site-pro-max` | Memory → Design → Content → SEO → Copy → WebCraft → QA → Feedback | Máxima qualidade |
+| `site-com-cms` | Memory → SEO → Copy → WebCraft → Backend → CMS → QA | Site com painel admin |
+| `ecommerce-completo` | Memory → Design → SEO → Copy → WebCraft → Backend → Ecommerce → CMS → QA → Feedback | Loja completa |
+| `redesign-textos` | Copy → WebCraft → QA | Novos textos em site existente |
 | `auditoria-seo` | SEO | Análise de site existente |
+| `backend-apenas` | Backend → QA | Só API |
+| `adicionar-pagamento` | Ecommerce → QA | Pagamento em site existente |
+| `adicionar-cms` | CMS → QA | Painel em site existente |
+
+> Todos os pipelines que entregam algo ao cliente terminam em **QA Agent**. A única exceção é `auditoria-seo`, que retorna apenas análise.
 
 ---
 
-## Shared skills — quem usa cada um
+## Shared-skills — quem usa cada um
 
-| Skill | Agentes que usam |
+| Skill | Agentes que declaram uso |
 |---|---|
-| `frontend-design` | WebCraft |
-| `acessibilidade` | WebCraft, QA |
-| `seo` | SEO Agent, WebCraft |
-| `analytics` | WebCraft |
-| `performance` | WebCraft, QA |
-| `error-handling` | Todos |
-| `output-validation` | Orchestrator, QA |
-| `brand-guide` | Design, Copy |
-| `content-strategy` | Copy |
-| `ab-testing` | WebCraft, Analytics |
-| `security` | WebCraft, QA |
-| `forms-backend` | WebCraft |
-| `rate-limiting` | Orchestrator |
+| `ab-testing` | webcraft-agent |
+| `acessibilidade` | webcraft-agent |
+| `auth-patterns` | backend-agent |
+| `brand-guide` | design-agent |
+| `cms-integration` | cms-agent |
+| `content-strategy` | copy-agent |
+| `error-handling` | todos os 12 |
+| `forms-backend` | webcraft-agent |
+| `frontend-design` | webcraft-agent |
+| `output-validation` | qa-agent |
+| `payments` | ecommerce-agent |
+| `rate-limiting` | orchestrator |
+| `security` | backend-agent, ecommerce-agent, cms-agent, qa-agent |
+| `seo` | seo-agent |
+
+---
+
+## Connectors
+
+**Ativos (5):** cloudflare, gmail, google-drive, supabase, vercel — cada um com `CONNECTOR.md` documentado.
+
+**Disponíveis (8, sem documentação ainda):** calendly, hubspot, jotform, mailerlite, netlify, webflow, wix, wordpress.
+
+---
+
+## Features premium integradas
+
+| Feature | Skill | Quando aciona |
+|---|---|---|
+| **Framer Motion** | `agents/webcraft-agent/skills/motion/` | Animações React |
+| **21st.dev** | `agents/webcraft-agent/skills/components/` | Componentes UI premium |
+| **UI/UX Pro Max** | `agents/design-agent/skills/uiux-pro/` | Design avançado, dark mode |
+| **Impeccable** | `agents/webcraft-agent/skills/impeccable/` | 23 comandos (/audit, /polish, /animate…) |
+| **Taste Skill** | `agents/design-agent/skills/taste/` | Padrão estético anti-slop com dials VARIANCE/MOTION/DENSITY |
+
+---
+
+## Infraestrutura conectada
+
+```
+Vercel       → deploy automático de sites e APIs
+Supabase     → banco, auth, storage (schema em scripts/setup-database.sql)
+Cloudflare   → Workers, D1, KV, R2, Queues
+Google Drive → brand guides e referências dos clientes
+Gmail        → notificações de entrega e emails transacionais
+```
+
+---
+
+## Como usar
+
+```bash
+# 1. Onboarding de novo cliente
+node scripts/new-client.mjs
+
+# 2. Copiar o bloco de ativação gerado em clients/{id}/REVISAO.md
+
+# 3. Colar em nova conversa com Claude e descrever o projeto
+
+# 4. Orchestrator escolhe o pipeline e coordena os agentes
+
+# 5. Após aprovação:
+git add . && git commit -m "feat: nova entrega" && git push
+# → Vercel deploy automático
+```
+
+Detalhes em [`ACTIVATE.md`](ACTIVATE.md) e [`HANDOFF.md`](HANDOFF.md).
 
 ---
 
@@ -116,4 +236,5 @@ multi-agent-repo/
 | Versão | Data | Mudança |
 |---|---|---|
 | 1.0 | Mai 2026 | Orquestrador + WebCraft + Copy + SEO |
-| 2.0 | Mai 2026 | Ecossistema completo — 8 agentes, 17 skills, infra completa |
+| 2.0 | Mai 2026 | Ecossistema completo — 8 agentes, infra completa |
+| **2.1.0** | **Mai 2026** | **+3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito** |
