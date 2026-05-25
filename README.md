@@ -180,7 +180,7 @@ webcraft-ecosystem/
 
 ## Connectors
 
-**Ativos (5):** cloudflare, gmail, google-drive, supabase, vercel — cada um com `CONNECTOR.md` documentado.
+**Ativos (6):** cloudflare, gmail, google-drive, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
 
 **Disponíveis (8, sem documentação ainda):** calendly, hubspot, jotform, mailerlite, netlify, webflow, wix, wordpress.
 
