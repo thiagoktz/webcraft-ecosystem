@@ -109,14 +109,22 @@ SEO Agent
     ↓
 Buscador Agent  ← busca dados reais do Google Places
     ↓
-[reviews + score JSON]
+[reviews + score + url_google_maps JSON]
     ↓
 Copy Agent  ← usa reviews reais na seção depoimentos
     ↓
-WebCraft Agent  ← renderiza com selo "Avaliado X.X no Google"
+WebCraft Agent  ← renderiza com selo "Avaliado X.X no Google" + link "Como chegar"
 ```
 
 Está em: `site-completo`, `site-pro-max`.
+
+---
+
+## Integração com outros agentes
+
+- **SEO Agent**: ao receber o output, deve incluir `url_google_maps` no array `sameAs` do schema JSON-LD `LocalBusiness`, e quando `avaliacoes.destacar_no_site === true`, gerar o bloco `aggregateRating` com `ratingValue` e `reviewCount` reais.
+- **Copy Agent**: usar `reviews_textuais[].texto` na seção depoimentos (truncado a 200 chars). Citar autor pelo `autor` literal (primeiro nome + inicial OK; inventar nome, NÃO).
+- **WebCraft Agent**: receber `url_google_maps` em `social_links.google_maps_url` para renderizar link "Como chegar" no footer/contato. Receber `negocio.foto_capa_url` opcional como fallback de `og:image` quando o Content Agent não rodou.
 
 ---
 

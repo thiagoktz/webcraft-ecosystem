@@ -2,7 +2,7 @@
 
 Repositório central com Orchestrator, **13 agentes especializados**, **15 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
-**Versão:** 2.1.0 · **Atualizado:** 24 de maio de 2026
+**Versão:** 2.2.0 · **Atualizado:** 26 de maio de 2026
 
 ---
 
@@ -245,4 +245,5 @@ Detalhes em [`ACTIVATE.md`](ACTIVATE.md) e [`HANDOFF.md`](HANDOFF.md).
 |---|---|---|
 | 1.0 | Mai 2026 | Orquestrador + WebCraft + Copy + SEO |
 | 2.0 | Mai 2026 | Ecossistema completo — 8 agentes, infra completa |
-| **2.1.0** | **Mai 2026** | **+3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito** |
+| 2.1.0 | Mai 2026 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito |
+| **2.2.0** | **Mai 2026** | **+buscador-agent (Google Places + reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG + WhatsApp preview), webcraft-agent renderiza ícones sociais e og:image** |

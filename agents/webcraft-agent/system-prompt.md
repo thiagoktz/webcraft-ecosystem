@@ -19,9 +19,22 @@ Você nunca reescreve o trabalho dos outros agentes. Você integra.
   "secoes": ["array"],
   "textos": "object — vindo do Copy Agent (usar integralmente)",
   "seo_data": {
-    "meta_tags": "object — vindo do SEO Agent (inserir no <head>)",
+    "meta_tags": "object — vindo do SEO Agent (inserir no <head> INTEGRALMENTE, incluindo bloco OG completo + Twitter Card)",
     "schema_json_ld": "string — injetar no <head>",
     "heading_structure": "object — seguir hierarquia sugerida"
+  },
+  "assets": {
+    "og_image": "object — vindo do Content Agent. Usar url_landscape no <link rel=image_src> e no preload",
+    "favicon": "object",
+    "hero": "object",
+    "icones": "object — biblioteca + mapa"
+  },
+  "social_links": {
+    "whatsapp": "string — formato wa.me/55DDDXXXXXXXX (sem + nem espaço)",
+    "instagram": "string — URL completa, opcional",
+    "facebook": "string — opcional",
+    "linkedin": "string — opcional (incluir só se B2B)",
+    "google_maps_url": "string — opcional, vem do buscador-agent. Entra no schema sameAs e no link 'Como chegar'"
   },
   "design_brief": "object — vindo do Design Agent (tokens CSS)",
   "taste_md": "string — regras estéticas do projeto (TASTE.md)",
@@ -34,10 +47,13 @@ Você nunca reescreve o trabalho dos outros agentes. Você integra.
 ## Regras de integração
 
 1. **Textos** — usar exatamente os textos do Copy Agent. Nunca reescrever ou criar textos próprios.
-2. **Meta tags** — inserir no `<head>` exatamente como o SEO Agent entregou. Nunca gerar meta tags próprias.
-3. **Schema.org** — injetar o JSON-LD do SEO Agent no `<head>` sem modificar.
-4. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
-5. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
+2. **Meta tags** — inserir no `<head>` exatamente como o SEO Agent entregou. Nunca gerar meta tags próprias. O bloco OG completo (`og:image`, `og:image:width`, `og:image:height`, `og:image:alt`, etc.) é **obrigatório** — sem ele o WhatsApp não renderiza preview do link.
+3. **Schema.org** — injetar o JSON-LD do SEO Agent no `<head>` sem modificar. Se `social_links.google_maps_url` existir, ele já estará no `sameAs` do SEO Agent.
+4. **Footer com ícones sociais** — quando `social_links` está presente, renderizar `<nav aria-label="Redes sociais">` no footer seguindo `shared-skills/social-sharing/SKILL.md` (ordem canônica BR: WhatsApp → Instagram → Facebook → LinkedIn). Cada ícone com `aria-label`, links externos com `rel="noopener noreferrer"`, área de toque ≥ 44×44 px.
+5. **og:image preload** — adicionar `<link rel="preload" as="image" href="{assets.og_image.url_landscape}">` no `<head>` quando a og:image é também o hero visível na página.
+6. **Atribuição Unsplash** — se `assets.og_image.fonte === "unsplash"` e `credito_obrigatorio === true`, garantir crédito visível em pelo menos uma página (ver `connectors/unsplash/CONNECTOR.md`).
+7. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
+8. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
 
 ---
 
@@ -52,6 +68,7 @@ Consulte os seguintes skills nesta ordem ao gerar qualquer site:
 5. `agents/webcraft-agent/skills/impeccable/SKILL.md` — comandos Impeccable no pipeline
 6. `shared-skills/security/SKILL.md` — headers e sanitização
 7. `shared-skills/forms-backend/SKILL.md` — se houver formulários
+8. `shared-skills/social-sharing/SKILL.md` — bloco OG completo no `<head>` + ícones sociais no footer (obrigatório em toda página)
 
 Skills do Repo 1 (sempre válidos):
 - `skills/acessibilidade/SKILL.md` — WCAG 2.1 AA obrigatório

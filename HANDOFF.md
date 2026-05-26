@@ -2,7 +2,7 @@
 **Projeto:** Ecossistema multi-agente para desenvolvimento de websites
 **Dono:** thiagoktz
 **Status:** Produção — 3 repos no ar, 12 agentes, 10 pipelines, 312 critérios de EVALS
-**Versão:** 2.1.0
+**Versão:** 2.2.0
 **Data:** Maio 2026
 
 ---
@@ -278,8 +278,9 @@ clients/REVISAO-exemplo.md  → exemplo real de REVISAO.md preenchido
 |---|---|---|
 | 2.0 | 2026-05-23 | 8 agentes, infra completa |
 | 2.1.0 | 2026-05-24 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito para validar o próprio ecosystem, contagens reais |
+| 2.2.0 | 2026-05-26 | +buscador-agent (Google Places, reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG completo + WhatsApp preview + ícones sociais), webcraft-agent atualizado para renderizar o bloco OG e o footer social, validação de og:image (HTTPS, dimensões, <300KB) na Camada 4.5 do QA |
 
 ---
 
-*Handoff atualizado em 24 de maio de 2026 — WebCraft Ecosystem v2.1.0*
+*Handoff atualizado em 26 de maio de 2026 — WebCraft Ecosystem v2.2.0*
 *Para retomar: ler este arquivo + abrir ecosystem.json + agent-registry.json*
