@@ -168,10 +168,10 @@ Taste Skill     → padrão estético anti-slop, dials VARIANCE/MOTION/DENSITY
 
 ## Métricas atuais
 
-- **Agentes:** 12 (Orchestrator + 11 especializados)
+- **Agentes:** 13 (Orchestrator + 12 especializados)
 - **Pipelines:** 10
 - **Shared-skills:** 14
-- **Connectors ativos:** 6 (cloudflare, gmail, google-drive, supabase, unsplash, vercel)
+- **Connectors ativos:** 7 (cloudflare, gmail, google-drive, google-places, supabase, unsplash, vercel)
 - **Connectors disponíveis sem implementar:** 8
 - **Critérios EVALS (ecosystem):** 312 distribuídos em 14 arquivos
 - **Critérios EVALS (standalone):** 101 em EVALS.md + adicionais nos SKILL.md

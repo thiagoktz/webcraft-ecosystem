@@ -1,6 +1,6 @@
 {
-  "version": "1.1",
-  "updated": "2026-05-24",
+  "version": "1.2",
+  "updated": "2026-05-25",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
     {
@@ -186,6 +186,7 @@
       "evals": "orchestrator/EVALS.md",
       "can_call": [
         "backend-agent",
+        "buscador-agent",
         "cms-agent",
         "content-agent",
         "copy-agent",
@@ -433,6 +434,52 @@
       ]
     },
     {
+      "id": "buscador-agent",
+      "name": "Buscador Agent",
+      "description": "Enriquece briefings com dados reais do Google Places: rating, total de reviews, top 5 avaliações textuais, endereço, telefone, horário e foto de capa. Alimenta seções de depoimentos e badges de prova social com dados verificados.",
+      "capabilities": [
+        "google-places-lookup",
+        "reviews-fetch",
+        "rating-fetch",
+        "business-data-enrichment",
+        "local-business-schema-input"
+      ],
+      "input_schema": {
+        "negocio": {
+          "nome": "string (obrigatório)",
+          "cidade": "string (recomendado)",
+          "estado_uf": "string (opcional)",
+          "place_id": "string (opcional — pula text search)"
+        },
+        "preferencias": {
+          "idioma": "string (default: pt-BR)",
+          "min_reviews": "number (default: 3)",
+          "min_rating": "number (default: 4.0)"
+        }
+      },
+      "output_schema": {
+        "status": "string (encontrado | nao_encontrado | erro | nao_aplicavel)",
+        "place_id": "string | null",
+        "negocio": "object (endereço, telefone, horário, foto, coordenadas)",
+        "avaliacoes": {
+          "rating": "number | null",
+          "total": "number | null",
+          "destacar_no_site": "boolean",
+          "reviews_textuais": "array of objects (autor, rating, texto, data_relativa)"
+        },
+        "recomendacoes_para_copy": "array of strings",
+        "alertas": "array of strings"
+      },
+      "system_prompt": "agents/buscador-agent/system-prompt.md",
+      "skills": [
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
       "id": "feedback-agent",
       "name": "Feedback Agent",
       "description": "Coleta, classifica e encaminha feedback do cliente. Analisa padrões para melhoria contínua.",
@@ -480,6 +527,7 @@
   "pipelines": {
     "site-completo": [
       "seo-agent",
+      "buscador-agent",
       "copy-agent",
       "webcraft-agent",
       "qa-agent"
@@ -534,6 +582,7 @@
       "design-agent",
       "content-agent",
       "seo-agent",
+      "buscador-agent",
       "copy-agent",
       "webcraft-agent",
       "qa-agent",

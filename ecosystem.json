@@ -26,12 +26,17 @@
     "adicionar-cms"
   ],
   "agents": {
-    "total": 12,
+    "total": 13,
     "list": [
       {
         "id": "orchestrator",
         "role": "Coordena todos os agentes do ecossistema",
         "entry_point": "orchestrator/system-prompt.md"
+      },
+      {
+        "id": "buscador-agent",
+        "role": "Enriquece briefings com dados reais do Google Places: rating, reviews textuais, endereço, telefone, horário e foto",
+        "entry_point": "agents/buscador-agent/system-prompt.md"
       },
       {
         "id": "memory-agent",
@@ -93,6 +98,7 @@
   "pipelines": {
     "site-completo": [
       "seo-agent",
+      "buscador-agent",
       "copy-agent",
       "webcraft-agent",
       "qa-agent"
@@ -147,6 +153,7 @@
       "design-agent",
       "content-agent",
       "seo-agent",
+      "buscador-agent",
       "copy-agent",
       "webcraft-agent",
       "qa-agent",
@@ -176,7 +183,8 @@
       "google-drive",
       "gmail",
       "cloudflare",
-      "unsplash"
+      "unsplash",
+      "google-places"
     ],
     "available": [
       "netlify",

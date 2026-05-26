@@ -1,6 +1,6 @@
 # WebCraft — Ecossistema Multi-Agente
 
-Repositório central com Orchestrator, **12 agentes especializados**, **14 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+Repositório central com Orchestrator, **13 agentes especializados**, **14 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
 **Versão:** 2.1.0 · **Atualizado:** 24 de maio de 2026
 
@@ -40,7 +40,7 @@ Usuário
 
 ---
 
-## Os 12 agentes
+## Os 13 agentes
 
 | Agente | Papel | Skills próprios |
 |---|---|---|
@@ -49,6 +49,7 @@ Usuário
 | `design-agent` | Tokens visuais, TASTE.md, dark mode | visual-direction, token-system, typography, uiux-pro, taste |
 | `content-agent` | Imagens, ícones, mídias | — |
 | `seo-agent` | Keywords, meta tags, schema.org | keyword-research, schema |
+| `buscador-agent` | Reviews e score reais via Google Places | — |
 | `copy-agent` | Textos por seção em JSON | copywriting, cta, tone-of-voice |
 | `webcraft-agent` | HTML/CSS/JS final | motion, components, impeccable, intake, deploy, ecommerce-lite, multilingual, performance, feedback-loop |
 | `qa-agent` | Valida 7 camadas antes da entrega | checklist |
@@ -82,6 +83,7 @@ webcraft-ecosystem/
   │     ├── seo-agent/           # Keywords e meta tags
   │     ├── design-agent/        # Tokens, Taste Skill, dark mode
   │     ├── content-agent/       # Imagens, ícones, mídias
+  │     ├── buscador-agent/      # Reviews e score via Google Places
   │     ├── qa-agent/            # Validação 7 camadas
   │     ├── feedback-agent/      # Classifica feedback
   │     ├── memory-agent/        # Contexto via Supabase
@@ -167,7 +169,7 @@ webcraft-ecosystem/
 | `brand-guide` | design-agent |
 | `cms-integration` | cms-agent |
 | `content-strategy` | copy-agent |
-| `error-handling` | todos os 12 |
+| `error-handling` | todos os 13 |
 | `forms-backend` | webcraft-agent |
 | `frontend-design` | webcraft-agent |
 | `output-validation` | qa-agent |
@@ -180,7 +182,7 @@ webcraft-ecosystem/
 
 ## Connectors
 
-**Ativos (6):** cloudflare, gmail, google-drive, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
+**Ativos (7):** cloudflare, gmail, google-drive, google-places, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
 
 **Disponíveis (8, sem documentação ainda):** calendly, hubspot, jotform, mailerlite, netlify, webflow, wix, wordpress.
 
