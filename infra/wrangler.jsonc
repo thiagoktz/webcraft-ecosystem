@@ -1,0 +1,42 @@
+// Template de Worker do ecossistema WebCraft.
+//
+// Este arquivo é referência — cada Worker (buscador, content-proxy, memory)
+// copia este template, ajusta o `name` e o `main`, e mantém os bindings de KV
+// abaixo, que são compartilhados entre todos os Workers do ecossistema.
+//
+// Os IDs de KV abaixo são REAIS, criados na conta thiago@edatica.com.br em 2026-05-26.
+// Account ID: 6188c4714196829122559f777623f401
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "webcraft-cache-proxy",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-05-26",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": {
+    "enabled": true
+  },
+
+  // KV bindings — compartilhados por todos os agentes que cacheiam respostas
+  // de APIs externas pagas (Google Places) ou rate-limitadas (Unsplash).
+  // Acesso no Worker:  env.PLACES_CACHE.get(key) / env.UNSPLASH_CACHE.put(key, val, {expirationTtl})
+  "kv_namespaces": [
+    {
+      "binding": "PLACES_CACHE",
+      "id": "ffd642d689704a09aa6c476adb54b134"
+    },
+    {
+      "binding": "UNSPLASH_CACHE",
+      "id": "50fff9560798472c9b0b198d15f18b92"
+    }
+  ]
+
+  // Secrets — NÃO declarar aqui. Subir via:
+  //   npx wrangler secret put GOOGLE_PLACES_API_KEY
+  //   npx wrangler secret put UNSPLASH_ACCESS_KEY
+  // (ou usar scripts/setup-secrets.sh)
+  //
+  // Em runtime:
+  //   env.GOOGLE_PLACES_API_KEY
+  //   env.UNSPLASH_ACCESS_KEY
+}

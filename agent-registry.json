@@ -1,5 +1,5 @@
 {
-  "version": "1.3",
+  "version": "1.4",
   "updated": "2026-05-26",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
@@ -182,6 +182,7 @@
       "skills": [
         "orchestrator/skills/routing/SKILL.md",
         "orchestrator/skills/integration/SKILL.md",
+        "orchestrator/skills/lp-review-pre-deploy/SKILL.md",
         "shared-skills/error-handling/SKILL.md",
         "shared-skills/rate-limiting/SKILL.md"
       ],
