@@ -1,0 +1,11 @@
+{
+  "name": "webcraft-cache-proxy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Worker proxy + cache para Google Places e Unsplash. Lê GOOGLE_PLACES_API_KEY e UNSPLASH_ACCESS_KEY do env e cacheia respostas em KV (TTL 7d).",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "tail": "wrangler tail"
+  }
+}

@@ -6,3 +6,8 @@
 .env
 .env.local
 .env.*.local
+
+# Node
+node_modules/
+.wrangler/
+package-lock.json

@@ -190,6 +190,9 @@ webcraft-ecosystem/
 ### Shared-skill destacada — `social-sharing`
 Toda página gerada do ecossistema entrega Open Graph + Twitter Card completos (com `og:image` 1200×630, < 300 KB) para que o link colado em WhatsApp/Telegram/LinkedIn/Slack renderize preview rico. O QA Agent valida automaticamente em Camada 4.5. Ícones sociais (WhatsApp, Instagram, Facebook, LinkedIn) entram no footer por padrão.
 
+### Worker de infra — `webcraft-cache-proxy`
+Proxy + cache em Cloudflare Workers para Google Places e Unsplash. Esconde as keys do frontend, cacheia respostas em KV (TTL 7 dias) pra economizar chamadas pagas e rate-limitadas. Endpoints: `/health`, `/places/search`, `/places/details`, `/unsplash/search`. Código em `infra/workers/cache-proxy/`, deploy via `npx wrangler deploy` e secrets via `scripts/setup-secrets.sh webcraft-cache-proxy`.
+
 **Disponíveis (8, sem documentação ainda):** calendly, hubspot, jotform, mailerlite, netlify, webflow, wix, wordpress.
 
 ---

@@ -1,0 +1,36 @@
+// Worker: webcraft-cache-proxy
+//
+// Proxy + cache para Google Places API (New) e Unsplash API.
+// Esconde as keys do frontend e cacheia respostas em KV (7 dias) pra
+// economizar chamadas pagas/rate-limitadas.
+//
+// Endpoints:
+//   GET /health
+//   GET /places/search?q=...&city=...&lang=pt-BR
+//   GET /places/details?id=...&lang=pt-BR
+//   GET /unsplash/search?q=...&orientation=landscape&color=blue
+//
+// Secrets esperados:  GOOGLE_PLACES_API_KEY, UNSPLASH_ACCESS_KEY
+// Subir com:          ../../scripts/setup-secrets.sh webcraft-cache-proxy
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "webcraft-cache-proxy",
+  "main": "src/index.js",
+  "compatibility_date": "2026-05-26",
+  "compatibility_flags": ["nodejs_compat"],
+
+  "observability": {
+    "enabled": true
+  },
+
+  "kv_namespaces": [
+    {
+      "binding": "PLACES_CACHE",
+      "id": "ffd642d689704a09aa6c476adb54b134"
+    },
+    {
+      "binding": "UNSPLASH_CACHE",
+      "id": "50fff9560798472c9b0b198d15f18b92"
+    }
+  ]
+}
