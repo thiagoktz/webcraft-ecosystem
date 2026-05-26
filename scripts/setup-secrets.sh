@@ -41,6 +41,7 @@ echo ""
 SECRETS=(
   "GOOGLE_PLACES_API_KEY"
   "UNSPLASH_ACCESS_KEY"
+  "WEBCRAFT_AUTH_TOKEN"
 )
 
 # shellcheck disable=SC1090

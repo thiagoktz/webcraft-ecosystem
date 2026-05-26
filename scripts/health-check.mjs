@@ -26,6 +26,14 @@ const FORMAT = args.has('--json') ? 'json' : args.has('--md') ? 'md' : 'term';
 
 const WORKER_URL = 'https://webcraft-cache-proxy.thiago-618.workers.dev';
 
+// Lê WEBCRAFT_AUTH_TOKEN do .env local (fora do repo, gitignored)
+let WEBCRAFT_AUTH_TOKEN = '';
+try {
+  const envText = fs.readFileSync('/Volumes/Extreme SSD/Webcraft/.env', 'utf-8');
+  WEBCRAFT_AUTH_TOKEN = envText.match(/^WEBCRAFT_AUTH_TOKEN=(.+)$/m)?.[1]?.trim() || '';
+} catch { /* sem .env — tudo bem, /health não exige auth */ }
+const AUTH_HEADERS = WEBCRAFT_AUTH_TOKEN ? { 'X-WebCraft-Auth': WEBCRAFT_AUTH_TOKEN } : {};
+
 const checks = [];
 function record(layer, name, status, detail = '') {
   checks.push({ layer, name, status, detail });
@@ -123,28 +131,42 @@ async function check(name, fn) {
 
 async function fetchJson(url, opts) {
   const r = await fetch(url, { ...opts, signal: AbortSignal.timeout(8000) });
-  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  if (!r.ok) {
+    const body = await r.text().catch(() => '');
+    throw new Error(`HTTP ${r.status}${body ? ` · ${body.slice(0, 80)}` : ''}`);
+  }
   return r.json();
 }
 
 await check(`Worker /health (${WORKER_URL})`, async () => {
-  const j = await fetchJson(`${WORKER_URL}/health`);
+  const j = await fetchJson(`${WORKER_URL}/health`); // /health é público, sem auth
   if (!j.ok) throw new Error('campo ok=false');
   return `ok · ts=${j.ts}`;
 });
 
-await check('/places/search smoke', async () => {
-  const j = await fetchJson(`${WORKER_URL}/places/search?q=Einstein&city=S%C3%A3o%20Paulo`);
-  if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 80));
-  if (!j.places?.length) throw new Error('sem resultados');
-  return `${j._source} · ${j.places[0].displayName?.text || j.places[0].id}`;
-});
+if (!WEBCRAFT_AUTH_TOKEN) {
+  record('runtime', '/places/search smoke', 'warn', 'WEBCRAFT_AUTH_TOKEN ausente no .env — smoke autenticado pulado');
+  record('runtime', '/unsplash/search smoke', 'warn', 'WEBCRAFT_AUTH_TOKEN ausente no .env — smoke autenticado pulado');
+} else {
+  await check('/places/search smoke', async () => {
+    const j = await fetchJson(`${WORKER_URL}/places/search?q=Einstein&city=S%C3%A3o%20Paulo`, { headers: AUTH_HEADERS });
+    if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 80));
+    if (!j.places?.length) throw new Error('sem resultados');
+    return `${j._source} · ${j.places[0].displayName?.text || j.places[0].id}`;
+  });
 
-await check('/unsplash/search smoke', async () => {
-  const j = await fetchJson(`${WORKER_URL}/unsplash/search?q=clinic&per_page=1`);
-  if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 80));
-  if (!j.results?.length) throw new Error('sem resultados');
-  return `${j._source} · ${j.results[0].id}`;
+  await check('/unsplash/search smoke', async () => {
+    const j = await fetchJson(`${WORKER_URL}/unsplash/search?q=clinic&per_page=1`, { headers: AUTH_HEADERS });
+    if (j.error) throw new Error(JSON.stringify(j.error).slice(0, 80));
+    if (!j.results?.length) throw new Error('sem resultados');
+    return `${j._source} · ${j.results[0].id}`;
+  });
+}
+
+await check('auth do Worker bloqueia request sem header', async () => {
+  const r = await fetch(`${WORKER_URL}/places/search?q=test`, { signal: AbortSignal.timeout(8000) });
+  if (r.status !== 401) throw new Error(`esperado 401, recebi ${r.status} — endpoint exposto!`);
+  return '401 sem header (correto)';
 });
 
 // ──────────────────────────────────────────────────────────────────────────

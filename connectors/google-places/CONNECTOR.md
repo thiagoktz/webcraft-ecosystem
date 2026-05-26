@@ -1,11 +1,45 @@
 # CONNECTOR.md — Google Places API (New)
 
-**Status:** ✅ Conectado
+**Status:** ✅ Conectado · proxy ativo em produção
 **API Base:** https://places.googleapis.com/v1
+**Worker proxy:** https://webcraft-cache-proxy.thiago-618.workers.dev (ponto de entrada padrão)
 **Documentação:** https://developers.google.com/maps/documentation/places/web-service/overview
 **Tipo:** REST API (Google Cloud — não há MCP server oficial)
 
 ⚠️ **Este é um conector PAGO.** Tem US$200 de crédito grátis/mês na Google Cloud, mas é fácil estourar. **Cache obrigatório.**
+
+---
+
+## Ponto de entrada recomendado: Worker `webcraft-cache-proxy`
+
+Agentes **não devem chamar `places.googleapis.com` direto** em produção. O caminho oficial é via o Worker `webcraft-cache-proxy` (código em `infra/workers/cache-proxy/`), que:
+
+1. Esconde a `GOOGLE_PLACES_API_KEY` (vive como secret no Worker, não vaza pro frontend)
+2. Cacheia respostas em Cloudflare KV (`PLACES_CACHE`, TTL 7 dias) — chamadas repetidas saem grátis
+3. Normaliza cache keys (lowercase + sorted params) — evita misses por capitalização diferente
+4. Exige header `X-WebCraft-Auth: <WEBCRAFT_AUTH_TOKEN>` em todos os endpoints exceto `/health`
+
+### Endpoints do Worker:
+
+```
+GET /health                                              (público)
+GET /places/search?q=<nome>&city=<cidade>&lang=pt-BR     (cache 7d)
+GET /places/details?id=<place_id>&lang=pt-BR             (cache 7d)
+```
+
+### Exemplo de uso (de qualquer agente):
+
+```javascript
+const r = await fetch(
+  `${env.WEBCRAFT_CACHE_PROXY}/places/search?q=Hospital%20Einstein&city=S%C3%A3o%20Paulo`,
+  { headers: { 'X-WebCraft-Auth': env.WEBCRAFT_AUTH_TOKEN } }
+);
+const data = await r.json();
+// data._source = "origin" | "cache"
+// data.places[0] = { id, displayName, formattedAddress, rating, userRatingCount }
+```
+
+A chamada direta à API só deve acontecer **dentro** do Worker (código em `infra/workers/cache-proxy/src/index.js`). Quando precisar evoluir o conector, modifique o Worker — não os agentes.
 
 ---
 

@@ -1,16 +1,38 @@
 // webcraft-cache-proxy
 // Proxy + cache pra Google Places API (New) e Unsplash API.
 //
+// Auth: todos os endpoints (exceto /health) exigem header
+//   X-WebCraft-Auth: <WEBCRAFT_AUTH_TOKEN do .env / wrangler secret>
+//
 // TODO: restringir CORS por origem (atualmente * pra facilitar dev).
-// TODO: adicionar auth via shared secret se for exposto publicamente.
 
 const CACHE_TTL_SECONDS = 7 * 24 * 60 * 60; // 7 dias
 const CORS_HEADERS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
+  'Access-Control-Allow-Headers': 'Content-Type, X-WebCraft-Auth',
   'Access-Control-Max-Age': '86400'
 };
+
+// Comparação em tempo constante pra não vazar info via timing
+function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string') return false;
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+function requireAuth(request, env) {
+  const token = request.headers.get('X-WebCraft-Auth') || '';
+  if (!env.WEBCRAFT_AUTH_TOKEN) {
+    return json({ error: 'server_misconfigured', message: 'WEBCRAFT_AUTH_TOKEN não definido' }, 500);
+  }
+  if (!safeEqual(token, env.WEBCRAFT_AUTH_TOKEN)) {
+    return json({ error: 'unauthorized', message: 'X-WebCraft-Auth ausente ou inválido' }, 401);
+  }
+  return null; // OK
+}
 
 export default {
   async fetch(request, env) {
@@ -22,7 +44,12 @@ export default {
     const path = url.pathname;
 
     try {
+      // Endpoint público (necessário pro health-check externo funcionar sem expor o token)
       if (path === '/health') return json({ ok: true, ts: Date.now() });
+
+      // Tudo o resto exige auth
+      const authErr = requireAuth(request, env);
+      if (authErr) return authErr;
 
       if (path === '/places/search')   return await placesSearch(url, env);
       if (path === '/places/details')  return await placesDetails(url, env);

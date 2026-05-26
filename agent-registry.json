@@ -232,7 +232,8 @@
         "agents/backend-agent/skills/database-schema/SKILL.md",
         "shared-skills/security/SKILL.md",
         "shared-skills/error-handling/SKILL.md",
-        "shared-skills/auth-patterns/SKILL.md"
+        "shared-skills/auth-patterns/SKILL.md",
+        "shared-skills/analytics/SKILL.md"
       ],
       "can_call": [],
       "called_by": [
@@ -267,7 +268,8 @@
         "agents/ecommerce-agent/skills/payment-gateway/SKILL.md",
         "shared-skills/payments/SKILL.md",
         "shared-skills/security/SKILL.md",
-        "shared-skills/error-handling/SKILL.md"
+        "shared-skills/error-handling/SKILL.md",
+        "shared-skills/analytics/SKILL.md"
       ],
       "can_call": [
         "backend-agent"

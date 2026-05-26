@@ -1,9 +1,41 @@
 # CONNECTOR.md — Unsplash API
 
-**Status:** ✅ Conectado
+**Status:** ✅ Conectado · proxy ativo em produção
 **API Base:** https://api.unsplash.com
+**Worker proxy:** https://webcraft-cache-proxy.thiago-618.workers.dev (ponto de entrada padrão)
 **Documentação oficial:** https://unsplash.com/documentation
-**Tipo:** REST API (não há MCP server oficial — uso via `fetch` direto)
+**Tipo:** REST API (não há MCP server oficial — uso via Worker)
+
+---
+
+## Ponto de entrada recomendado: Worker `webcraft-cache-proxy`
+
+Agentes **não devem chamar `api.unsplash.com` direto** em produção. O caminho oficial é via o Worker `webcraft-cache-proxy` (código em `infra/workers/cache-proxy/`), que:
+
+1. Esconde a `UNSPLASH_ACCESS_KEY` (vive como secret no Worker, não vaza pro frontend)
+2. Cacheia respostas em Cloudflare KV (`UNSPLASH_CACHE`, TTL 7 dias) — economiza requests do limite Demo (50/h)
+3. Reduz o payload da Unsplash pros campos úteis (`id`, `urls.raw`, `urls.regular`, `user`, `download_location`)
+4. Exige header `X-WebCraft-Auth: <WEBCRAFT_AUTH_TOKEN>` em todos os endpoints exceto `/health`
+
+### Endpoint do Worker:
+
+```
+GET /unsplash/search?q=<query>&orientation=landscape&color=blue&per_page=5
+```
+
+### Exemplo de uso (Content Agent):
+
+```javascript
+const r = await fetch(
+  `${env.WEBCRAFT_CACHE_PROXY}/unsplash/search?q=physiotherapy%20clinic&orientation=landscape&per_page=5`,
+  { headers: { 'X-WebCraft-Auth': env.WEBCRAFT_AUTH_TOKEN } }
+);
+const data = await r.json();
+// data._source = "origin" | "cache"
+// data.results[0] = { id, alt, urls: { raw, regular }, user, download_location, width, height }
+```
+
+A chamada direta à API só deve acontecer **dentro** do Worker. O `download_location` retornado deve ser pingado pelo WebCraft Agent no build final (obrigação dos termos Unsplash).
 
 ---
 
