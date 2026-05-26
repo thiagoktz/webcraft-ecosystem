@@ -47,7 +47,8 @@
         "agents/webcraft-agent/skills/impeccable/INTEGRACAO.md",
         "shared-skills/ab-testing/SKILL.md",
         "shared-skills/error-handling/SKILL.md",
-        "shared-skills/forms-backend/SKILL.md"
+        "shared-skills/forms-backend/SKILL.md",
+        "shared-skills/social-sharing/SKILL.md"
       ],
       "evals": "agents/webcraft/EVALS.md",
       "can_call": [
@@ -146,6 +147,7 @@
         "agents/seo-agent/skills/keyword-research/SKILL.md",
         "agents/seo-agent/skills/schema/SKILL.md",
         "shared-skills/seo/SKILL.md",
+        "shared-skills/social-sharing/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "evals": "agents/seo-agent/EVALS.md",
@@ -393,7 +395,9 @@
         "recomendacoes": "array"
       },
       "system_prompt": "agents/content-agent/system-prompt.md",
-      "skills": [],
+      "skills": [
+        "shared-skills/social-sharing/SKILL.md"
+      ],
       "can_call": [],
       "called_by": [
         "orchestrator"
@@ -426,6 +430,7 @@
         "agents/qa-agent/skills/checklist/SKILL.md",
         "shared-skills/security/SKILL.md",
         "shared-skills/output-validation/SKILL.md",
+        "shared-skills/social-sharing/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "can_call": [],
@@ -522,7 +527,8 @@
     "shared-skills/payments/SKILL.md",
     "shared-skills/rate-limiting/SKILL.md",
     "shared-skills/security/SKILL.md",
-    "shared-skills/seo/SKILL.md"
+    "shared-skills/seo/SKILL.md",
+    "shared-skills/social-sharing/SKILL.md"
   ],
   "pipelines": {
     "site-completo": [

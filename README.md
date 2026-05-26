@@ -1,6 +1,6 @@
 # WebCraft — Ecossistema Multi-Agente
 
-Repositório central com Orchestrator, **13 agentes especializados**, **14 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+Repositório central com Orchestrator, **13 agentes especializados**, **15 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
 **Versão:** 2.1.0 · **Atualizado:** 24 de maio de 2026
 
@@ -91,7 +91,7 @@ webcraft-ecosystem/
   │     ├── ecommerce-agent/     # Pagamentos
   │     └── cms-agent/           # Painel admin
   │
-  ├── shared-skills/             # 14 skills compartilhados
+  ├── shared-skills/             # 15 skills compartilhados
   │     ├── ab-testing/          # Testes de conversão
   │     ├── acessibilidade/      # WCAG 2.1 AA
   │     ├── auth-patterns/       # JWT, OAuth, sessions
@@ -105,13 +105,16 @@ webcraft-ecosystem/
   │     ├── payments/            # Patterns de gateway
   │     ├── rate-limiting/       # Circuit breaker e throttle
   │     ├── security/            # Headers e sanitização
-  │     └── seo/                 # SEO on-page
+  │     ├── seo/                 # SEO on-page
+  │     └── social-sharing/      # Open Graph + Twitter Card + WhatsApp preview
   │
-  ├── connectors/                # MCPs ativos
+  ├── connectors/                # MCPs / APIs ativos
   │     ├── cloudflare/
   │     ├── gmail/
   │     ├── google-drive/
+  │     ├── google-places/
   │     ├── supabase/
+  │     ├── unsplash/
   │     └── vercel/
   │
   ├── evals/                     # 312 critérios distribuídos
@@ -183,6 +186,9 @@ webcraft-ecosystem/
 ## Connectors
 
 **Ativos (7):** cloudflare, gmail, google-drive, google-places, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
+
+### Shared-skill destacada — `social-sharing`
+Toda página gerada do ecossistema entrega Open Graph + Twitter Card completos (com `og:image` 1200×630, < 300 KB) para que o link colado em WhatsApp/Telegram/LinkedIn/Slack renderize preview rico. O QA Agent valida automaticamente em Camada 4.5. Ícones sociais (WhatsApp, Instagram, Facebook, LinkedIn) entram no footer por padrão.
 
 **Disponíveis (8, sem documentação ainda):** calendly, hubspot, jotform, mailerlite, netlify, webflow, wix, wordpress.
 

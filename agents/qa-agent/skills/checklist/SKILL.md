@@ -30,10 +30,11 @@ O QA Agent executa a auditoria em 7 camadas, nesta ordem. Issues críticos em qu
 ```
 [ ] <meta name="description"> presente
 [ ] Favicon referenciado no <head>
-[ ] Open Graph tags presentes (og:title, og:description, og:type)
 [ ] <link rel="canonical"> presente
 [ ] Nenhum atributo inline de style que contradiga o CSS
 ```
+
+### Social preview (critérios próprios — ver Camada 4.5)
 
 ### Como verificar:
 ```javascript
@@ -152,12 +153,63 @@ const ratio = ratioContraste('#1E293B', '#FFFFFF'); // deve ser ≥ 4.5
 ### Warnings:
 ```
 [ ] <meta name="description"> presente
-[ ] Open Graph completo (title, description, type, url)
-[ ] Twitter Card presente
 [ ] <link rel="canonical"> presente
 [ ] Schema.org JSON-LD presente e válido (parseable como JSON)
 [ ] Imagens têm width e height definidos (evita CLS)
 [ ] lang correto no <html>
+```
+
+---
+
+## Camada 4.5 — Social Preview (Open Graph + Twitter Card)
+
+Padrão completo em `shared-skills/social-sharing/SKILL.md`.
+
+### Issues críticos:
+```
+[ ] og:image presente e HTTPS (sem og:image, WhatsApp degrada para link cru)
+[ ] og:image:width e og:image:height presentes (sem dimensões absolutas, WhatsApp não renderiza)
+[ ] og:image acessível (HEAD 200, content-type image/*)
+[ ] og:image abaixo de 300 KB (limite do WhatsApp)
+[ ] og:url igual ao <link rel="canonical">
+```
+
+### Warnings:
+```
+[ ] og:type, og:site_name, og:locale presentes
+[ ] og:image:alt descritivo
+[ ] twitter:card = summary_large_image
+[ ] twitter:title, twitter:description, twitter:image
+[ ] Ícones sociais no footer com aria-label e rel="noopener noreferrer"
+[ ] Link WhatsApp no footer em formato wa.me/55DDDXXXXXXXX
+```
+
+### Verificação programática:
+```javascript
+async function validarSocialPreview(html) {
+  const issues = [];
+  const get = (re) => html.match(re)?.[1];
+
+  const ogImage  = get(/property="og:image"\s+content="([^"]+)"/);
+  const ogW      = get(/property="og:image:width"\s+content="([^"]+)"/);
+  const ogH      = get(/property="og:image:height"\s+content="([^"]+)"/);
+  const ogUrl    = get(/property="og:url"\s+content="([^"]+)"/);
+  const canon    = get(/<link\s+rel="canonical"\s+href="([^"]+)"/);
+
+  if (!ogImage)                          issues.push({ severity: 'critical', msg: 'og:image ausente' });
+  if (ogImage && !ogImage.startsWith('https://')) issues.push({ severity: 'critical', msg: 'og:image deve ser HTTPS' });
+  if (!ogW || !ogH)                      issues.push({ severity: 'critical', msg: 'og:image:width/height ausentes' });
+  if (ogUrl && canon && ogUrl !== canon) issues.push({ severity: 'warning',  msg: 'og:url != canonical' });
+
+  if (ogImage) {
+    const head = await fetch(ogImage, { method: 'HEAD' }).catch(() => null);
+    if (!head?.ok) issues.push({ severity: 'critical', msg: 'og:image inacessível' });
+    const size = parseInt(head?.headers.get('content-length') || '0');
+    if (size > 300 * 1024) issues.push({ severity: 'critical', msg: `og:image > 300KB (${(size/1024).toFixed(0)}KB)` });
+  }
+
+  return issues;
+}
 ```
 
 ### Verificação de title e description:

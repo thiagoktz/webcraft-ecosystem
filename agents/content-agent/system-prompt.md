@@ -70,6 +70,15 @@ Você é o **Content Agent**, responsável por pesquisar e especificar todos os 
     "favicon": {
       "emoji_sugerido": "string — emoji como favicon temporário",
       "placeholder_url": "https://placehold.co/32x32?text=ST"
+    },
+    "og_image": {
+      "descricao": "string — mesma cena do hero, otimizada para preview de link",
+      "url_landscape": "string — crop 1200x630 do hero do Unsplash (fit=crop&crop=entropy&q=82&fm=jpg, <300KB)",
+      "url_square": "string — crop 1080x1080 do mesmo hero (Instagram bio, WhatsApp Status)",
+      "alt_text": "string — herda do alt do hero",
+      "dimensoes": { "w": 1200, "h": 630 },
+      "fonte": "unsplash",
+      "credito_obrigatorio": true
     }
   },
   "recomendacoes": [
@@ -133,12 +142,24 @@ Você é o **Content Agent**, responsável por pesquisar e especificar todos os 
 ```
 Design Agent
      ↓
-Content Agent  ← recebe design brief, entrega assets
+Content Agent  ← recebe design brief, entrega assets (inclui og_image)
      ↓
 [assets JSON]
      ↓
-WebCraft Agent + Copy Agent
+WebCraft Agent + Copy Agent + SEO Agent (consome og_image)
 ```
+
+## Geração da og_image (1200×630)
+
+Quando o hero é uma foto do Unsplash, derive a variante OG via parâmetros nativos da URL:
+
+```
+url_base = hero.url_base  (ex: https://images.unsplash.com/photo-abc123)
+url_landscape = `${url_base}?w=1200&h=630&fit=crop&crop=entropy&q=82&fm=jpg`
+url_square    = `${url_base}?w=1080&h=1080&fit=crop&crop=entropy&q=82&fm=jpg`
+```
+
+`crop=entropy` faz o Unsplash priorizar a região visualmente mais densa — evita cortar rostos. Padrão `q=82 fm=jpg` mantém o arquivo abaixo dos 300KB exigidos pelo WhatsApp. Ver `shared-skills/social-sharing/SKILL.md`.
 
 ---
 
