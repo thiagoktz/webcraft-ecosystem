@@ -1,8 +1,8 @@
 # WebCraft — Ecossistema Multi-Agente
 
-Repositório central com Orchestrator, **14 agentes especializados**, **16 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+Repositório central com Orchestrator, **15 agentes especializados**, **17 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
-**Versão:** 2.3.0 · **Atualizado:** 26 de maio de 2026
+**Versão:** 2.4.0 · **Atualizado:** 26 de maio de 2026
 
 ---
 
@@ -40,7 +40,7 @@ Usuário
 
 ---
 
-## Os 14 agentes
+## Os 15 agentes
 
 | Agente | Papel | Skills próprios |
 |---|---|---|
@@ -50,12 +50,13 @@ Usuário
 | `content-agent` | Imagens, ícones, mídias | — |
 | `seo-agent` | Keywords, meta tags, schema.org | keyword-research, schema |
 | `buscador-agent` | Reviews e score reais via Google Places | — |
-| `copy-agent` | Textos por seção em JSON | copywriting, cta, tone-of-voice |
+| `copy-agent` | Textos por seção em JSON + páginas legais LGPD | copywriting, cta, tone-of-voice, legal-copy |
 | `webcraft-agent` | HTML/CSS/JS final | motion, components, impeccable, intake, deploy, ecommerce-lite, multilingual, performance, feedback-loop |
+| `compliance-agent` | LGPD: banner Consent Mode v2, políticas legais (via Copy), endpoints de direitos do titular | — |
 | `analytics-agent` | GA4 + GTM, mapeamento de conversões, docs do cliente | — |
-| `qa-agent` | Valida 7 camadas antes da entrega | checklist |
+| `qa-agent` | Valida 7+ camadas antes da entrega | checklist |
 | `feedback-agent` | Classifica feedback, melhoria contínua | — |
-| `backend-agent` | API REST, auth, banco | auth, database-schema |
+| `backend-agent` | API REST, auth, banco, endpoints LGPD | auth, database-schema |
 | `ecommerce-agent` | Stripe, Mercado Pago, PagSeguro, PIX | payment-gateway |
 | `cms-agent` | Painel admin para o cliente editar | admin-ui |
 
@@ -85,19 +86,21 @@ webcraft-ecosystem/
   │     ├── design-agent/        # Tokens, Taste Skill, dark mode
   │     ├── content-agent/       # Imagens, ícones, mídias
   │     ├── buscador-agent/      # Reviews e score via Google Places
+  │     ├── compliance-agent/    # LGPD: banner, políticas, endpoints
   │     ├── analytics-agent/     # GA4 + GTM, mapeamento de conversões
-  │     ├── qa-agent/            # Validação 7 camadas
+  │     ├── qa-agent/            # Validação 7+ camadas (4.7 = LGPD)
   │     ├── feedback-agent/      # Classifica feedback
   │     ├── memory-agent/        # Contexto via Supabase
   │     ├── backend-agent/       # API, auth, database-schema
   │     ├── ecommerce-agent/     # Pagamentos
   │     └── cms-agent/           # Painel admin
   │
-  ├── shared-skills/             # 16 skills compartilhados
+  ├── shared-skills/             # 17 skills compartilhados
   │     ├── ab-testing/          # Testes de conversão
   │     ├── acessibilidade/      # WCAG 2.1 AA
   │     ├── analytics/           # GA4 + GTM, eventos, dataLayer
   │     ├── auth-patterns/       # JWT, OAuth, sessions
+  │     ├── lgpd-compliance/     # Bases legais, direitos do titular, banner
   │     ├── brand-guide/         # Identidade de marca
   │     ├── cms-integration/     # Sanity, Contentful, Supabase
   │     ├── content-strategy/    # Hierarquia de mensagens
@@ -257,4 +260,5 @@ Detalhes em [`ACTIVATE.md`](ACTIVATE.md) e [`HANDOFF.md`](HANDOFF.md).
 | 2.0 | Mai 2026 | Ecossistema completo — 8 agentes, infra completa |
 | 2.1.0 | Mai 2026 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito |
 | 2.2.0 | Mai 2026 | +buscador-agent (Google Places + reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG + WhatsApp preview), webcraft-agent renderiza ícones sociais e og:image |
-| **2.3.0** | **Mai 2026** | **+analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6, webcraft-agent passa a marcar `data-cta`/`id` em CTAs/forms** |
+| 2.3.0 | Mai 2026 | +analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6, webcraft-agent passa a marcar `data-cta`/`id` em CTAs/forms |
+| **2.4.0** | **Mai 2026** | **+compliance-agent (LGPD: banner Consent Mode v2 padrão híbrido, endpoints direitos do titular), +shared-skill lgpd-compliance, +skill legal-copy no copy-agent (gera políticas via delegação), qa-agent ganha Camada 4.7, webcraft-agent reserva slot footer para links legais, analytics-agent detecta `compliance_active` e remove o TODO LGPD interim** |

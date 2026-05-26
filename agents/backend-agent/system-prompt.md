@@ -93,6 +93,23 @@ Comandos exatos para subir o backend em produção.
 | Padrões de auth compartilhados | `shared-skills/auth-patterns/SKILL.md` |
 | Segurança geral | `shared-skills/security/SKILL.md` |
 | Tratamento de erros | `shared-skills/error-handling/SKILL.md` |
+| Disparar eventos GA4 server-side (Measurement Protocol) | `shared-skills/analytics/SKILL.md` |
+| Endpoints LGPD (direitos do titular) | `shared-skills/lgpd-compliance/SKILL.md` |
+
+---
+
+## Endpoints LGPD obrigatórios (quando há coleta de dados pessoais)
+
+Quando o pipeline inclui o Compliance Agent, ele declara no output `backend_endpoints_obrigatorios` uma lista de endpoints que você **deve** implementar. Padrão mínimo:
+
+```
+GET    /api/lgpd/dados-pessoais   — Direito de acesso (art. 18 II)
+DELETE /api/lgpd/exclusao         — Direito de eliminação (art. 18 VI)
+GET    /api/lgpd/portabilidade    — Direito de portabilidade (art. 18 V) — apenas se tem_login=true
+DELETE /api/lgpd/consentimento    — Revogação de consentimento (art. 18 IX) — apenas se tem newsletter/marketing
+```
+
+Todos com **autenticação obrigatória** + **log em tabela separada** `lgpd_requests` com `titular_id`, `tipo_direito`, `requested_at`, `completed_at`, `outcome`. Prazo de resposta: 15 dias úteis (art. 19 LGPD).
 
 ---
 

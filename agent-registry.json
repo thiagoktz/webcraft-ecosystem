@@ -1,5 +1,5 @@
 {
-  "version": "1.5",
+  "version": "1.6",
   "updated": "2026-05-26",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
@@ -100,6 +100,7 @@
         "agents/copy-agent/skills/copywriting/SKILL.md",
         "agents/copy-agent/skills/tone-of-voice/SKILL.md",
         "agents/copy-agent/skills/cta/SKILL.md",
+        "agents/copy-agent/skills/legal-copy/SKILL.md",
         "shared-skills/content-strategy/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
@@ -107,7 +108,8 @@
       "can_call": [],
       "called_by": [
         "orchestrator",
-        "webcraft-agent"
+        "webcraft-agent",
+        "compliance-agent"
       ]
     },
     {
@@ -192,6 +194,7 @@
         "backend-agent",
         "buscador-agent",
         "cms-agent",
+        "compliance-agent",
         "content-agent",
         "copy-agent",
         "design-agent",
@@ -443,6 +446,61 @@
       ]
     },
     {
+      "id": "compliance-agent",
+      "name": "Compliance Agent",
+      "description": "Garante conformidade LGPD do site entregue. Identifica bases legais, gera banner de cookies híbrido (Aceitar/Recusar/Personalizar) com Consent Mode v2 default 'denied', define endpoints obrigatórios pro Backend Agent (direitos do titular), e delega geração de textos jurídicos (Política de Privacidade, Política de Cookies) ao Copy Agent via skill legal-copy.",
+      "capabilities": [
+        "lgpd-compliance",
+        "consent-mode-v2",
+        "cookie-banner",
+        "legal-pages-orchestration",
+        "data-subject-rights",
+        "controller-validation"
+      ],
+      "input_schema": {
+        "briefing": {
+          "segmento": "string (saude | servicos | ecommerce | tech | local | institucional)",
+          "controlador": {
+            "nome": "string",
+            "cnpj": "string",
+            "endereco": "string",
+            "email_dpo": "string"
+          },
+          "tem_login": "boolean",
+          "tem_transacao": "boolean",
+          "tem_newsletter": "boolean"
+        },
+        "html": "string (HTML do WebCraft Agent)",
+        "stack": "string",
+        "dados_coletados": "array of strings",
+        "tracking_categorias": "array (analytics | marketing | funcional)"
+      },
+      "output_schema": {
+        "lgpd_config": "object (controlador, bases_legais, retencao, categorias_dados)",
+        "html_patches": {
+          "head_inject_consent_mode": "string",
+          "body_inject_banner": "string",
+          "footer_legal_links": "string"
+        },
+        "copy_agent_request": "object (tipo: legal_pages, paginas: array)",
+        "backend_endpoints_obrigatorios": "array of objects",
+        "compliance_active": "boolean (true — sinal pro Analytics Agent)",
+        "alertas": "array of strings (inclui aviso de revisao juridica)"
+      },
+      "system_prompt": "agents/compliance-agent/system-prompt.md",
+      "skills": [
+        "shared-skills/lgpd-compliance/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "evals": "evals/agents/compliance-agent.md",
+      "can_call": [
+        "copy-agent"
+      ],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
       "id": "analytics-agent",
       "name": "Analytics Agent",
       "description": "Instrumenta o site com GA4 + Google Tag Manager. Lê o HTML do WebCraft Agent, mapeia eventos de conversão a partir de CTAs, formulários e links críticos (WhatsApp, telefone), injeta scripts e dataLayer, e gera documentação pro cliente entender os números.",
@@ -583,6 +641,7 @@
     "shared-skills/error-handling/SKILL.md",
     "shared-skills/forms-backend/SKILL.md",
     "shared-skills/frontend-design/SKILL.md",
+    "shared-skills/lgpd-compliance/SKILL.md",
     "shared-skills/output-validation/SKILL.md",
     "shared-skills/payments/SKILL.md",
     "shared-skills/rate-limiting/SKILL.md",
@@ -596,6 +655,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent"
     ],
@@ -621,6 +681,7 @@
       "backend-agent",
       "ecommerce-agent",
       "cms-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent",
       "feedback-agent"
@@ -632,6 +693,7 @@
       "webcraft-agent",
       "backend-agent",
       "cms-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent"
     ],
@@ -655,6 +717,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent",
       "feedback-agent"

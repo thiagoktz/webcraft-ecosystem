@@ -260,8 +260,75 @@ function validarAnalytics(html, pipelineIncluiuAnalytics) {
   const gtmLoadCount = (html.match(/googletagmanager\.com\/gtm\.js/g) || []).length;
   if (gtmLoadCount > 1) issues.push({ severity: 'critical', msg: `gtm.js carrega ${gtmLoadCount}x` });
 
-  if (!html.includes('TODO LGPD') && !html.includes('cookieconsent')) {
+  if (!html.includes('TODO LGPD') && !html.includes('cookieconsent') && !html.includes('lgpd-banner')) {
     issues.push({ severity: 'warning', msg: 'Sem indicação de tratamento LGPD' });
+  }
+  return issues;
+}
+```
+
+---
+
+## Camada 4.7 — LGPD (quando Compliance Agent rodou)
+
+Padrão completo em `shared-skills/lgpd-compliance/SKILL.md`. Esta camada roda apenas quando o pipeline inclui o Compliance Agent (`site-completo`, `site-com-cms`, `ecommerce-completo`, `site-pro-max`).
+
+### Issues críticos:
+```
+[ ] Banner LGPD presente (id="lgpd-banner" ou equivalente, role="dialog")
+[ ] Banner tem 3 botões: Aceitar tudo, Recusar tudo, Personalizar (não-negociável)
+[ ] Botões Aceitar/Recusar têm mesma proeminência visual (sem dark pattern)
+[ ] Consent Mode v2 default 'denied' no <head> ANTES do GTM
+[ ] localStorage usado pra persistir consent (não cookie pré-consent)
+[ ] Link visível para política de cookies dentro do banner
+[ ] politica-de-privacidade.html existe no projeto
+[ ] politica-de-cookies.html existe no projeto
+[ ] Footer tem links pra ambas as páginas legais
+```
+
+### Warnings:
+```
+[ ] Email do DPO presente nas páginas legais (não genérico contato@)
+[ ] CNPJ do controlador presente
+[ ] Tempo de retenção declarado por categoria de dado
+[ ] Aviso de revisão jurídica visível no início das páginas legais
+[ ] data-atualizacao presente nas páginas legais
+[ ] Painel "Personalizar" exibe categorias com explicação curta de cada uma
+[ ] Cookie "essencial" disabled+checked no painel (não pode ser desativado)
+```
+
+### Verificação programática:
+```javascript
+function validarLgpd(html, pipelineIncluiuCompliance, projetoFiles) {
+  const issues = [];
+  if (!pipelineIncluiuCompliance) return issues; // skip
+
+  // Banner presente
+  if (!/id=["']lgpd-banner["']/.test(html)) {
+    issues.push({ severity: 'critical', msg: 'Banner LGPD ausente' });
+  }
+  // 3 botões obrigatórios
+  for (const acao of ['accept-all', 'reject-all', 'customize']) {
+    if (!html.includes(`data-lgpd="${acao}"`)) {
+      issues.push({ severity: 'critical', msg: `Botão ${acao} ausente no banner` });
+    }
+  }
+  // Consent Mode default
+  if (!/gtag\(['"]consent['"]\s*,\s*['"]default['"]/.test(html)) {
+    issues.push({ severity: 'critical', msg: 'Consent Mode v2 default não inicializado' });
+  }
+  // Links legais no footer
+  if (!/href=["'][^"']*politica-de-privacidade/.test(html)) {
+    issues.push({ severity: 'critical', msg: 'Link pra politica-de-privacidade ausente' });
+  }
+  if (!/href=["'][^"']*politica-de-cookies/.test(html)) {
+    issues.push({ severity: 'critical', msg: 'Link pra politica-de-cookies ausente' });
+  }
+  // Arquivos das páginas legais existem
+  for (const f of ['politica-de-privacidade.html', 'politica-de-cookies.html']) {
+    if (!projetoFiles.includes(f)) {
+      issues.push({ severity: 'critical', msg: `${f} não encontrado no projeto` });
+    }
   }
   return issues;
 }

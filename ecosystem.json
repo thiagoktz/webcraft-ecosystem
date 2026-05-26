@@ -2,7 +2,7 @@
   "ecosystem": {
     "id": "webcraft-ecosystem",
     "name": "WebCraft Agent Ecosystem",
-    "version": "2.3.0",
+    "version": "2.4.0",
     "description": "Ecossistema multi-agente para desenvolvimento de websites profissionais",
     "maintainer": "thiagoktz",
     "repository": "https://github.com/thiagoktz/webcraft-ecosystem",
@@ -26,7 +26,7 @@
     "adicionar-cms"
   ],
   "agents": {
-    "total": 14,
+    "total": 15,
     "list": [
       {
         "id": "orchestrator",
@@ -42,6 +42,11 @@
         "id": "analytics-agent",
         "role": "Instrumenta o site com GA4 + GTM, mapeia eventos de conversão e gera docs do cliente",
         "entry_point": "agents/analytics-agent/system-prompt.md"
+      },
+      {
+        "id": "compliance-agent",
+        "role": "Garante conformidade LGPD: banner Consent Mode v2, políticas legais (via Copy Agent), endpoints de direitos do titular",
+        "entry_point": "agents/compliance-agent/system-prompt.md"
       },
       {
         "id": "memory-agent",
@@ -106,6 +111,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent"
     ],
@@ -131,6 +137,7 @@
       "backend-agent",
       "ecommerce-agent",
       "cms-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent",
       "feedback-agent"
@@ -142,6 +149,7 @@
       "webcraft-agent",
       "backend-agent",
       "cms-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent"
     ],
@@ -165,6 +173,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "compliance-agent",
       "analytics-agent",
       "qa-agent",
       "feedback-agent"
@@ -181,6 +190,7 @@
     "error-handling",
     "forms-backend",
     "frontend-design",
+    "lgpd-compliance",
     "output-validation",
     "payments",
     "rate-limiting",

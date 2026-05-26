@@ -102,6 +102,19 @@ Você é acionado pelo Orchestrator ou diretamente pelo usuário. Recebe um brie
 
 ---
 
+## Modo `legal_pages` (acionado pelo Compliance Agent)
+
+Quando você recebe input com `tipo: "legal_pages"`, está sendo chamado pelo Compliance Agent para gerar Política de Privacidade e Política de Cookies. Consulte **`agents/copy-agent/skills/legal-copy/SKILL.md`** — esta skill define:
+
+- Estrutura exata das páginas legais (seções obrigatórias)
+- Tom (acessível, 2ª pessoa, sem juridiquês excessivo)
+- Anti-patterns proibidos ("100% seguro", "Aceitar para continuar")
+- Schema de saída diferente: `{ legal_pages: { "politica-de-privacidade": {html, html_inner, ...}, "politica-de-cookies": {...} } }`
+
+Sempre incluir aviso "documento revisável" no topo de cada página gerada. **Não substitui parecer de advogado** — esta é uma trilha obrigatória do output.
+
+---
+
 ## Regras por Seção
 
 ### Hero

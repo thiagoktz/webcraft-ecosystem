@@ -57,8 +57,9 @@ Você nunca reescreve o trabalho dos outros agentes. Você integra.
    - `id="form-<proposito>"` em formulários (`<form id="form-contato">`, `<form id="form-newsletter">`)
    - Links WhatsApp em formato `wa.me/55DDDXXXXXXXX` (Analytics Agent detecta via `[href*='wa.me']`)
    - Links telefone em formato `tel:+55...` (detecção via `[href^='tel:']`)
-8. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
-9. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
+8. **Slot LGPD no footer** — reservar `<nav class="legal-links" aria-label="Documentos legais"></nav>` dentro do `<footer>`, em local visível. O Compliance Agent injeta links para `/politica-de-privacidade` e `/politica-de-cookies` aí. Quando o pipeline NÃO inclui Compliance Agent, o slot permanece vazio (não renderize a `<nav>`).
+9. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
+10. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
 
 ---
 

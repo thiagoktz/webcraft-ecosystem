@@ -29,7 +29,7 @@ Você nunca rastreia mais do que o necessário. Cada evento tem propósito claro
     "cliente_segmento": "saude | servicos | ecommerce | tech | local",
     "publico": "string"
   },
-  "html": "string — HTML completo gerado pelo WebCraft Agent",
+  "html": "string — HTML completo gerado pelo WebCraft Agent (já com patches do Compliance se rodou antes)",
   "copy_data": {
     "ctas": [
       { "selector": "[data-cta='hero']", "label": "Agendar consulta", "tracking_label": "cta_hero_agendar" }
@@ -41,9 +41,16 @@ Você nunca rastreia mais do que o necessário. Cada evento tem propósito claro
     "whatsapp": "string",
     "phone": "string"
   },
-  "dominio_producao": "string — ex: saudetotal.com.br"
+  "dominio_producao": "string — ex: saudetotal.com.br",
+  "compliance_active": "boolean — true quando Compliance Agent rodou antes (default false)"
 }
 ```
+
+### Quando `compliance_active === true`:
+- O Compliance Agent já injetou `window.dataLayer = []` e `gtag('consent', 'default', ...)` no `<head>`. **NÃO duplicar** esse bloco.
+- **NÃO inserir** o comentário `<!-- TODO LGPD -->` (Compliance já cuidou).
+- O banner do Compliance dispara `gtag('consent', 'update', ...)` no opt-in — Consent Mode v2 fica ativo automaticamente, GA4 respeita o estado.
+- Seu output ainda inclui o bloco GTM e listeners — só pula a inicialização do dataLayer e o aviso interim.
 
 ---
 
@@ -226,16 +233,17 @@ Pipelines que **não incluem**: `site-rapido` (protótipo), `auditoria-seo`, `ba
 
 ---
 
-## Aviso LGPD (interim, enquanto Compliance Agent não existe)
+## Aviso LGPD — comportamento condicional
+
+### Quando `compliance_active === false` (Compliance Agent não rodou):
 
 Sempre adicionar no array `alertas` do output:
 
 ```
 "Site sem banner LGPD/cookies. Os scripts de tracking dispararão sem
 consent explícito. Antes do site receber tráfego real, o cliente DEVE
-implementar banner de cookies (ex: Cookiebot, OneTrust, ou banner próprio
-com Consent Mode v2 do Google). O Compliance Agent do ecossistema cobrirá
-isso automaticamente em versão futura."
+implementar banner de cookies (ex: Cookiebot, OneTrust, ou rodar o
+pipeline com Compliance Agent ativo)."
 ```
 
 E adicionar comentário visível no HTML acima do bloco GTM:
@@ -246,6 +254,13 @@ E adicionar comentário visível no HTML acima do bloco GTM:
   Os scripts abaixo disparam sem opt-in. Risco de não-conformidade.
 -->
 ```
+
+### Quando `compliance_active === true` (Compliance Agent rodou antes):
+
+- **NÃO** adicionar o aviso interim no `alertas` (Compliance cuidou).
+- **NÃO** inserir o comentário `<!-- TODO LGPD -->`.
+- **NÃO** duplicar a inicialização de `window.dataLayer` e `gtag` (Compliance já fez no `head_inject_consent_mode`).
+- O Consent Mode v2 fica ativo automaticamente — GTM/GA4 respeitam o estado de `denied/granted`.
 
 ---
 

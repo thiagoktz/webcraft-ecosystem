@@ -2,7 +2,7 @@
 **Projeto:** Ecossistema multi-agente para desenvolvimento de websites
 **Dono:** thiagoktz
 **Status:** Produção — 3 repos no ar, 12 agentes, 10 pipelines, 312 critérios de EVALS
-**Versão:** 2.3.0
+**Versão:** 2.4.0
 **Data:** Maio 2026
 
 ---
@@ -168,9 +168,9 @@ Taste Skill     → padrão estético anti-slop, dials VARIANCE/MOTION/DENSITY
 
 ## Métricas atuais
 
-- **Agentes:** 14 (Orchestrator + 13 especializados)
+- **Agentes:** 15 (Orchestrator + 14 especializados)
 - **Pipelines:** 10
-- **Shared-skills:** 16
+- **Shared-skills:** 17
 - **Connectors ativos:** 8 (cloudflare, gmail, google-analytics, google-drive, google-places, supabase, unsplash, vercel)
 - **Connectors disponíveis sem implementar:** 8
 - **Critérios EVALS (ecosystem):** 312 distribuídos em 14 arquivos
@@ -280,8 +280,9 @@ clients/REVISAO-exemplo.md  → exemplo real de REVISAO.md preenchido
 | 2.1.0 | 2026-05-24 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito para validar o próprio ecosystem, contagens reais |
 | 2.2.0 | 2026-05-26 | +buscador-agent (Google Places, reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG completo + WhatsApp preview + ícones sociais), webcraft-agent atualizado para renderizar o bloco OG e o footer social, validação de og:image (HTTPS, dimensões, <300KB) na Camada 4.5 do QA |
 | 2.3.0 | 2026-05-26 | +analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6 (valida GTM/dataLayer/listeners), webcraft-agent passa a marcar data-cta e id em CTAs/forms para tracking sem ambiguidade. Pipelines site-completo, site-com-cms, ecommerce-completo, redesign-textos e site-pro-max ganham analytics-agent antes do qa-agent. Aviso interim de LGPD até Compliance Agent existir. |
+| 2.4.0 | 2026-05-26 | +compliance-agent (LGPD: banner Consent Mode v2 padrão híbrido Aceitar/Recusar/Personalizar; endpoints obrigatórios direitos do titular), +shared-skill lgpd-compliance (bases legais, retenção, anti-patterns), +skill legal-copy no copy-agent (compliance delega geração de Política de Privacidade e Política de Cookies). qa-agent ganha Camada 4.7. Backend ganha endpoints LGPD. WebCraft reserva slot footer.legal-links. Analytics detecta compliance_active e remove o TODO LGPD interim. Pipelines site-completo, site-com-cms, ecommerce-completo e site-pro-max ganham compliance-agent ANTES do analytics-agent (Consent Mode v2 entra antes do GTM). |
 
 ---
 
-*Handoff atualizado em 26 de maio de 2026 — WebCraft Ecosystem v2.3.0*
+*Handoff atualizado em 26 de maio de 2026 — WebCraft Ecosystem v2.4.0*
 *Para retomar: ler este arquivo + abrir ecosystem.json + agent-registry.json*
