@@ -52,8 +52,13 @@ Você nunca reescreve o trabalho dos outros agentes. Você integra.
 4. **Footer com ícones sociais** — quando `social_links` está presente, renderizar `<nav aria-label="Redes sociais">` no footer seguindo `shared-skills/social-sharing/SKILL.md` (ordem canônica BR: WhatsApp → Instagram → Facebook → LinkedIn). Cada ícone com `aria-label`, links externos com `rel="noopener noreferrer"`, área de toque ≥ 44×44 px.
 5. **og:image preload** — adicionar `<link rel="preload" as="image" href="{assets.og_image.url_landscape}">` no `<head>` quando a og:image é também o hero visível na página.
 6. **Atribuição Unsplash** — se `assets.og_image.fonte === "unsplash"` e `credito_obrigatorio === true`, garantir crédito visível em pelo menos uma página (ver `connectors/unsplash/CONNECTOR.md`).
-7. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
-8. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
+7. **Atributos de tracking** — para o Analytics Agent mapear eventos sem ambiguidade, manter:
+   - `data-cta="<nome-da-secao>"` em todo CTA principal (`<button data-cta="hero">`, `<a data-cta="pricing">`)
+   - `id="form-<proposito>"` em formulários (`<form id="form-contato">`, `<form id="form-newsletter">`)
+   - Links WhatsApp em formato `wa.me/55DDDXXXXXXXX` (Analytics Agent detecta via `[href*='wa.me']`)
+   - Links telefone em formato `tel:+55...` (detecção via `[href^='tel:']`)
+8. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
+9. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
 
 ---
 

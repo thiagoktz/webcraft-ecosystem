@@ -1,8 +1,8 @@
 # WebCraft — Ecossistema Multi-Agente
 
-Repositório central com Orchestrator, **13 agentes especializados**, **15 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+Repositório central com Orchestrator, **14 agentes especializados**, **16 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
-**Versão:** 2.2.0 · **Atualizado:** 26 de maio de 2026
+**Versão:** 2.3.0 · **Atualizado:** 26 de maio de 2026
 
 ---
 
@@ -40,7 +40,7 @@ Usuário
 
 ---
 
-## Os 13 agentes
+## Os 14 agentes
 
 | Agente | Papel | Skills próprios |
 |---|---|---|
@@ -52,6 +52,7 @@ Usuário
 | `buscador-agent` | Reviews e score reais via Google Places | — |
 | `copy-agent` | Textos por seção em JSON | copywriting, cta, tone-of-voice |
 | `webcraft-agent` | HTML/CSS/JS final | motion, components, impeccable, intake, deploy, ecommerce-lite, multilingual, performance, feedback-loop |
+| `analytics-agent` | GA4 + GTM, mapeamento de conversões, docs do cliente | — |
 | `qa-agent` | Valida 7 camadas antes da entrega | checklist |
 | `feedback-agent` | Classifica feedback, melhoria contínua | — |
 | `backend-agent` | API REST, auth, banco | auth, database-schema |
@@ -84,6 +85,7 @@ webcraft-ecosystem/
   │     ├── design-agent/        # Tokens, Taste Skill, dark mode
   │     ├── content-agent/       # Imagens, ícones, mídias
   │     ├── buscador-agent/      # Reviews e score via Google Places
+  │     ├── analytics-agent/     # GA4 + GTM, mapeamento de conversões
   │     ├── qa-agent/            # Validação 7 camadas
   │     ├── feedback-agent/      # Classifica feedback
   │     ├── memory-agent/        # Contexto via Supabase
@@ -91,9 +93,10 @@ webcraft-ecosystem/
   │     ├── ecommerce-agent/     # Pagamentos
   │     └── cms-agent/           # Painel admin
   │
-  ├── shared-skills/             # 15 skills compartilhados
+  ├── shared-skills/             # 16 skills compartilhados
   │     ├── ab-testing/          # Testes de conversão
   │     ├── acessibilidade/      # WCAG 2.1 AA
+  │     ├── analytics/           # GA4 + GTM, eventos, dataLayer
   │     ├── auth-patterns/       # JWT, OAuth, sessions
   │     ├── brand-guide/         # Identidade de marca
   │     ├── cms-integration/     # Sanity, Contentful, Supabase
@@ -111,6 +114,7 @@ webcraft-ecosystem/
   ├── connectors/                # MCPs / APIs ativos
   │     ├── cloudflare/
   │     ├── gmail/
+  │     ├── google-analytics/
   │     ├── google-drive/
   │     ├── google-places/
   │     ├── supabase/
@@ -129,9 +133,12 @@ webcraft-ecosystem/
   │     └── REVISAO-exemplo.md
   │
   ├── scripts/
-  │     ├── new-client.mjs
   │     ├── import-client.mjs
-  │     └── setup-database.sql
+  │     ├── setup-database.sql
+  │     ├── health-check.mjs
+  │     ├── setup-secrets.sh
+  │     └── validate-og.mjs
+  │     (new-client.mjs vive no repo irmão webcraft-clients/)
   │
   ├── infra/
   │     ├── logging/
@@ -185,7 +192,7 @@ webcraft-ecosystem/
 
 ## Connectors
 
-**Ativos (7):** cloudflare, gmail, google-drive, google-places, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
+**Ativos (8):** cloudflare, gmail, google-analytics, google-drive, google-places, supabase, unsplash, vercel — cada um com `CONNECTOR.md` documentado.
 
 ### Shared-skill destacada — `social-sharing`
 Toda página gerada do ecossistema entrega Open Graph + Twitter Card completos (com `og:image` 1200×630, < 300 KB) para que o link colado em WhatsApp/Telegram/LinkedIn/Slack renderize preview rico. O QA Agent valida automaticamente em Camada 4.5. Ícones sociais (WhatsApp, Instagram, Facebook, LinkedIn) entram no footer por padrão.
@@ -224,8 +231,8 @@ Gmail        → notificações de entrega e emails transacionais
 ## Como usar
 
 ```bash
-# 1. Onboarding de novo cliente
-node scripts/new-client.mjs
+# 1. Onboarding de novo cliente (script vive no repo irmão webcraft-clients/)
+node ../webcraft-clients/new-client.mjs
 
 # 2. Copiar o bloco de ativação gerado em clients/{id}/REVISAO.md
 
@@ -249,4 +256,5 @@ Detalhes em [`ACTIVATE.md`](ACTIVATE.md) e [`HANDOFF.md`](HANDOFF.md).
 | 1.0 | Mai 2026 | Orquestrador + WebCraft + Copy + SEO |
 | 2.0 | Mai 2026 | Ecossistema completo — 8 agentes, infra completa |
 | 2.1.0 | Mai 2026 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito |
-| **2.2.0** | **Mai 2026** | **+buscador-agent (Google Places + reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG + WhatsApp preview), webcraft-agent renderiza ícones sociais e og:image** |
+| 2.2.0 | Mai 2026 | +buscador-agent (Google Places + reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG + WhatsApp preview), webcraft-agent renderiza ícones sociais e og:image |
+| **2.3.0** | **Mai 2026** | **+analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6, webcraft-agent passa a marcar `data-cta`/`id` em CTAs/forms** |

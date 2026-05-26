@@ -212,6 +212,61 @@ async function validarSocialPreview(html) {
 }
 ```
 
+---
+
+## Camada 4.6 — Analytics (GA4 + GTM)
+
+Padrão completo em `shared-skills/analytics/SKILL.md`. Esta camada só roda quando o pipeline incluiu o Analytics Agent (todos exceto `site-rapido`, `auditoria-seo`, `backend-apenas`, `adicionar-pagamento`, `adicionar-cms`).
+
+### Issues críticos:
+```
+[ ] Bloco GTM presente no <head> (script de googletagmanager.com/gtm.js)
+[ ] window.dataLayer inicializado ANTES do bloco GTM
+[ ] <noscript> fallback do GTM logo após <body> (necessário se JS desabilitado)
+[ ] GTM Container ID não é placeholder (não pode ser "GTM-XXXXXXX")
+[ ] GA4 Measurement ID não é placeholder (não pode ser "G-XXXXXXXXXX")
+[ ] Apenas 1 carregamento de gtm.js no HTML (sem duplicação)
+[ ] Listeners JS dos eventos críticos presentes (hero_cta_click, form_submit_success, whatsapp_open, phone_click)
+```
+
+### Warnings:
+```
+[ ] Comentário "<!-- TODO LGPD -->" presente OU banner de consent já implementado
+[ ] Atributos data-cta presentes em CTAs principais
+[ ] Forms críticos têm id explícito (não auto-gerado)
+[ ] Naming dos eventos segue snake_case e ≤ 40 chars
+[ ] Eventos de Enhanced Ecommerce presentes quando pipeline incluiu ecommerce-agent
+```
+
+### Verificação programática:
+```javascript
+function validarAnalytics(html, pipelineIncluiuAnalytics) {
+  const issues = [];
+  if (!pipelineIncluiuAnalytics) return issues; // skip
+
+  const gtmMatch = html.match(/GTM-[A-Z0-9]{6,8}/);
+  const ga4Match = html.match(/G-[A-Z0-9]{8,12}/);
+
+  if (!gtmMatch) issues.push({ severity: 'critical', msg: 'GTM container ausente' });
+  if (gtmMatch?.[0] === 'GTM-XXXXXXX') issues.push({ severity: 'critical', msg: 'GTM placeholder não substituído' });
+  if (ga4Match?.[0] === 'G-XXXXXXXXXX') issues.push({ severity: 'critical', msg: 'GA4 placeholder não substituído' });
+
+  if (!/window\.dataLayer\s*=\s*window\.dataLayer\s*\|\|\s*\[\]/.test(html)) {
+    issues.push({ severity: 'critical', msg: 'dataLayer não inicializado antes do GTM' });
+  }
+  if (!/<noscript[^>]*>[\s\S]*?gtm\.js\?id=GTM/.test(html)) {
+    issues.push({ severity: 'critical', msg: '<noscript> fallback do GTM ausente' });
+  }
+  const gtmLoadCount = (html.match(/googletagmanager\.com\/gtm\.js/g) || []).length;
+  if (gtmLoadCount > 1) issues.push({ severity: 'critical', msg: `gtm.js carrega ${gtmLoadCount}x` });
+
+  if (!html.includes('TODO LGPD') && !html.includes('cookieconsent')) {
+    issues.push({ severity: 'warning', msg: 'Sem indicação de tratamento LGPD' });
+  }
+  return issues;
+}
+```
+
 ### Verificação de title e description:
 ```javascript
 const titleMatch = html.match(/<title>([^<]+)<\/title>/);

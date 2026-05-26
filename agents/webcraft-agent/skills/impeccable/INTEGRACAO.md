@@ -21,7 +21,7 @@ Um projeto pro max usa os dois.
 ```
 ONBOARDING (1x por projeto)
 ──────────────────────────
-1. node scripts/new-client.mjs
+1. node ../webcraft-clients/new-client.mjs
 2. npx skills add pbakaus/impeccable
 3. npx skills add https://github.com/Leonxlnx/taste-skill
 4. /impeccable teach  → gera .impeccable.md com contexto do cliente

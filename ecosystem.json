@@ -2,7 +2,7 @@
   "ecosystem": {
     "id": "webcraft-ecosystem",
     "name": "WebCraft Agent Ecosystem",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "Ecossistema multi-agente para desenvolvimento de websites profissionais",
     "maintainer": "thiagoktz",
     "repository": "https://github.com/thiagoktz/webcraft-ecosystem",
@@ -26,7 +26,7 @@
     "adicionar-cms"
   ],
   "agents": {
-    "total": 13,
+    "total": 14,
     "list": [
       {
         "id": "orchestrator",
@@ -37,6 +37,11 @@
         "id": "buscador-agent",
         "role": "Enriquece briefings com dados reais do Google Places: rating, reviews textuais, endereço, telefone, horário e foto",
         "entry_point": "agents/buscador-agent/system-prompt.md"
+      },
+      {
+        "id": "analytics-agent",
+        "role": "Instrumenta o site com GA4 + GTM, mapeia eventos de conversão e gera docs do cliente",
+        "entry_point": "agents/analytics-agent/system-prompt.md"
       },
       {
         "id": "memory-agent",
@@ -101,6 +106,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "site-rapido": [
@@ -113,6 +119,7 @@
     "redesign-textos": [
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "ecommerce-completo": [
@@ -124,6 +131,7 @@
       "backend-agent",
       "ecommerce-agent",
       "cms-agent",
+      "analytics-agent",
       "qa-agent",
       "feedback-agent"
     ],
@@ -134,6 +142,7 @@
       "webcraft-agent",
       "backend-agent",
       "cms-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "backend-apenas": [
@@ -156,6 +165,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent",
       "feedback-agent"
     ]
@@ -163,6 +173,7 @@
   "shared_skills": [
     "ab-testing",
     "acessibilidade",
+    "analytics",
     "auth-patterns",
     "brand-guide",
     "cms-integration",
@@ -185,7 +196,8 @@
       "gmail",
       "cloudflare",
       "unsplash",
-      "google-places"
+      "google-places",
+      "google-analytics"
     ],
     "available": [
       "netlify",
@@ -250,8 +262,8 @@
     "note": "Total atualizado após auditoria. Score depende do workflow CI funcionar."
   },
   "onboarding": {
-    "new_client_script": "scripts/new-client.mjs",
-    "client_template": "clients/client-template.json",
+    "new_client_script": "../webcraft-clients/new-client.mjs",
+    "client_template": "../webcraft-clients/clients/client-template.json",
     "estimated_setup_min": 2
   }
 }

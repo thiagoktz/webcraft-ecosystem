@@ -1,5 +1,5 @@
 {
-  "version": "1.4",
+  "version": "1.5",
   "updated": "2026-05-26",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
@@ -188,6 +188,7 @@
       ],
       "evals": "orchestrator/EVALS.md",
       "can_call": [
+        "analytics-agent",
         "backend-agent",
         "buscador-agent",
         "cms-agent",
@@ -440,6 +441,61 @@
       ]
     },
     {
+      "id": "analytics-agent",
+      "name": "Analytics Agent",
+      "description": "Instrumenta o site com GA4 + Google Tag Manager. Lê o HTML do WebCraft Agent, mapeia eventos de conversão a partir de CTAs, formulários e links críticos (WhatsApp, telefone), injeta scripts e dataLayer, e gera documentação pro cliente entender os números.",
+      "capabilities": [
+        "ga4-instrumentation",
+        "gtm-tagging",
+        "event-mapping",
+        "enhanced-ecommerce",
+        "conversion-tracking",
+        "datalayer-design",
+        "client-docs"
+      ],
+      "input_schema": {
+        "briefing": {
+          "objetivo": "string (gerar_leads | vender | educar | branding)",
+          "cliente_segmento": "string"
+        },
+        "html": "string (HTML pronto do WebCraft Agent)",
+        "copy_data": "object (CTAs vindos do Copy Agent, opcional)",
+        "stack": "string (HTML/CSS/JS | React | Next.js)",
+        "ecommerce_data": "object | null (vindo do ecommerce-agent quando aplicável)",
+        "social_links": "object (whatsapp, phone — vindos do buscador-agent ou briefing)",
+        "dominio_producao": "string"
+      },
+      "output_schema": {
+        "tracking_plan": {
+          "platform": "string (ga4+gtm)",
+          "measurement_id_placeholder": "string",
+          "gtm_container_placeholder": "string",
+          "events": "array of objects (name, trigger, selector, params, conversion)"
+        },
+        "html_patches": {
+          "head_inject": "string",
+          "body_open_inject": "string",
+          "event_listeners_inline_script": "string",
+          "data_attributes_required": "array"
+        },
+        "client_docs": {
+          "setup_md": "string (passo-a-passo pro cliente criar GA4 e GTM)",
+          "dashboard_md": "string (como ler os números)"
+        },
+        "alertas": "array of strings (inclui aviso LGPD)"
+      },
+      "system_prompt": "agents/analytics-agent/system-prompt.md",
+      "skills": [
+        "shared-skills/analytics/SKILL.md",
+        "shared-skills/error-handling/SKILL.md"
+      ],
+      "evals": "evals/agents/analytics-agent.md",
+      "can_call": [],
+      "called_by": [
+        "orchestrator"
+      ]
+    },
+    {
       "id": "buscador-agent",
       "name": "Buscador Agent",
       "description": "Enriquece briefings com dados reais do Google Places: rating, total de reviews, top 5 avaliações textuais, endereço, telefone, horário e foto de capa. Alimenta seções de depoimentos e badges de prova social com dados verificados.",
@@ -517,6 +573,7 @@
   "shared_skills": [
     "shared-skills/ab-testing/SKILL.md",
     "shared-skills/acessibilidade/SKILL.md",
+    "shared-skills/analytics/SKILL.md",
     "shared-skills/auth-patterns/SKILL.md",
     "shared-skills/brand-guide/SKILL.md",
     "shared-skills/cms-integration/SKILL.md",
@@ -537,6 +594,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "site-rapido": [
@@ -549,6 +607,7 @@
     "redesign-textos": [
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "ecommerce-completo": [
@@ -560,6 +619,7 @@
       "backend-agent",
       "ecommerce-agent",
       "cms-agent",
+      "analytics-agent",
       "qa-agent",
       "feedback-agent"
     ],
@@ -570,6 +630,7 @@
       "webcraft-agent",
       "backend-agent",
       "cms-agent",
+      "analytics-agent",
       "qa-agent"
     ],
     "backend-apenas": [
@@ -592,6 +653,7 @@
       "buscador-agent",
       "copy-agent",
       "webcraft-agent",
+      "analytics-agent",
       "qa-agent",
       "feedback-agent"
     ]

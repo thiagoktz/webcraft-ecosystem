@@ -77,7 +77,26 @@ Você é acionado pelo Orchestrator ou diretamente pelo usuário. Recebe um brie
   "meta": {
     "title": "string (50-60 chars, inclui palavra-chave)",
     "description": "string (150-160 chars)"
-  }
+  },
+
+  // Opcional — preencher quando o pipeline incluir analytics-agent.
+  // O Analytics Agent usa estes labels pra nomear eventos GA4 sem ambiguidade.
+  "ctas_tracking": [
+    {
+      "secao": "hero",
+      "label": "Agendar consulta",
+      "tracking_label": "cta_hero_agendar",
+      "destino": "#contato",
+      "conversion": true
+    },
+    {
+      "secao": "pricing",
+      "label": "Começar agora",
+      "tracking_label": "cta_pricing_comecar",
+      "destino": "https://wa.me/5511999999999",
+      "conversion": true
+    }
+  ]
 }
 ```
 

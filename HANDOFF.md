@@ -2,7 +2,7 @@
 **Projeto:** Ecossistema multi-agente para desenvolvimento de websites
 **Dono:** thiagoktz
 **Status:** Produção — 3 repos no ar, 12 agentes, 10 pipelines, 312 critérios de EVALS
-**Versão:** 2.2.0
+**Versão:** 2.3.0
 **Data:** Maio 2026
 
 ---
@@ -102,8 +102,8 @@ Taste Skill     → padrão estético anti-slop, dials VARIANCE/MOTION/DENSITY
 ## Fluxo de novo cliente
 
 ```
-1. node scripts/new-client.mjs
-   → gera clients/{id}/client.json + ACTIVATE.md + REVISAO.md + TASTE.md + .impeccable.md
+1. node ../webcraft-clients/new-client.mjs
+   → gera (no repo webcraft-clients) clients/{id}/client.json + ACTIVATE.md + REVISAO.md + TASTE.md + .impeccable.md
 
 2. Colar o bloco do REVISAO.md em nova conversa com Claude
 
@@ -168,10 +168,10 @@ Taste Skill     → padrão estético anti-slop, dials VARIANCE/MOTION/DENSITY
 
 ## Métricas atuais
 
-- **Agentes:** 13 (Orchestrator + 12 especializados)
+- **Agentes:** 14 (Orchestrator + 13 especializados)
 - **Pipelines:** 10
-- **Shared-skills:** 15
-- **Connectors ativos:** 7 (cloudflare, gmail, google-drive, google-places, supabase, unsplash, vercel)
+- **Shared-skills:** 16
+- **Connectors ativos:** 8 (cloudflare, gmail, google-analytics, google-drive, google-places, supabase, unsplash, vercel)
 - **Connectors disponíveis sem implementar:** 8
 - **Critérios EVALS (ecosystem):** 312 distribuídos em 14 arquivos
 - **Critérios EVALS (standalone):** 101 em EVALS.md + adicionais nos SKILL.md
@@ -256,7 +256,7 @@ ecosystem.json              → visão geral, fonte de verdade do ecossistema
 agent-registry.json         → schema detalhado de cada agente e pipeline
 orchestrator/system-prompt.md → como o Orchestrator pensa
 ACTIVATE.md                 → como ativar (está nos dois repos públicos)
-scripts/new-client.mjs      → onboarding de clientes
+../webcraft-clients/new-client.mjs → onboarding de clientes (vive no repo irmão)
 clients/REVISAO-exemplo.md  → exemplo real de REVISAO.md preenchido
 ```
 
@@ -279,8 +279,9 @@ clients/REVISAO-exemplo.md  → exemplo real de REVISAO.md preenchido
 | 2.0 | 2026-05-23 | 8 agentes, infra completa |
 | 2.1.0 | 2026-05-24 | +3 agentes (backend, ecommerce, cms), +4 pipelines, sincronização registry↔ecosystem.json, CI reescrito para validar o próprio ecosystem, contagens reais |
 | 2.2.0 | 2026-05-26 | +buscador-agent (Google Places, reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG completo + WhatsApp preview + ícones sociais), webcraft-agent atualizado para renderizar o bloco OG e o footer social, validação de og:image (HTTPS, dimensões, <300KB) na Camada 4.5 do QA |
+| 2.3.0 | 2026-05-26 | +analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6 (valida GTM/dataLayer/listeners), webcraft-agent passa a marcar data-cta e id em CTAs/forms para tracking sem ambiguidade. Pipelines site-completo, site-com-cms, ecommerce-completo, redesign-textos e site-pro-max ganham analytics-agent antes do qa-agent. Aviso interim de LGPD até Compliance Agent existir. |
 
 ---
 
-*Handoff atualizado em 26 de maio de 2026 — WebCraft Ecosystem v2.2.0*
+*Handoff atualizado em 26 de maio de 2026 — WebCraft Ecosystem v2.3.0*
 *Para retomar: ler este arquivo + abrir ecosystem.json + agent-registry.json*

@@ -6,17 +6,26 @@
 
 ```
 scripts/
-  ├── new-client.mjs          ← Criar novo cliente interativamente
   ├── import-client.mjs       ← Importar cliente de ecossistema externo
   └── setup-database.sql      ← Schema do banco de dados (Supabase)
 ```
+
+> **Nota:** `new-client.mjs` foi movido para o repo irmão `webcraft-clients/`
+> (fonte de verdade dos clientes). Ele resolve paths via `import.meta.url`,
+> então funciona de qualquer CWD desde que os dois repos estejam lado a lado.
 
 ---
 
 ## 1. Criar novo cliente
 
+O script de onboarding vive no repo irmão `webcraft-clients/`:
+
 ```bash
-node scripts/new-client.mjs
+# A partir de webcraft-ecosystem/
+node ../webcraft-clients/new-client.mjs
+
+# Ou a partir da raiz do monorepo (ex: Webcraft/)
+node webcraft-clients/new-client.mjs
 ```
 
 Fluxo interativo que coleta:
@@ -25,10 +34,11 @@ Fluxo interativo que coleta:
 - Marca (descrição, público, tom, cor primária)
 - Técnico (stack, deploy, domínio)
 
-Gera automaticamente:
-- `clients/{client_id}/client.json`
-- `clients/{client_id}/ACTIVATE.md`
-- `clients/{client_id}/projects/`
+Gera automaticamente (em `webcraft-clients/clients/{client_id}/`):
+- `client.json`
+- `ACTIVATE.md`
+- `REVISAO.md`
+- `projects/`
 - Registro no Supabase (se `SUPABASE_URL` configurado)
 
 ---
@@ -123,9 +133,9 @@ clients/
 ## Fluxo completo de novo cliente
 
 ```
-1. node scripts/new-client.mjs
+1. node ../webcraft-clients/new-client.mjs
         ↓
-2. Abre clients/{id}/ACTIVATE.md
+2. Abre webcraft-clients/clients/{id}/ACTIVATE.md
         ↓
 3. Copia bloco de ativação
         ↓
