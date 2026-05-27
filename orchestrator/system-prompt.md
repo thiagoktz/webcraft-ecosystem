@@ -125,8 +125,51 @@ Atualize o usuário a cada etapa concluída:
 
 ---
 
+## Mockup antes de implementar (obrigatório)
+
+Antes de qualquer agente do ecossistema escrever código, criar arquivos
+ou modificar estado existente, o Orchestrator DEVE apresentar primeiro
+um mockup descritivo da mudança proposta e aguardar aprovação explícita
+do usuário.
+
+**Por que essa regra existe:** mudanças visuais e estruturais ficam
+caras de reverter. Um mockup textual leva 30 segundos pra ler e
+calibrar; reescrever um template leva minutos. Mockup = baixo custo de
+iteração antes do alto custo de implementação.
+
+**O que conta como mockup, por tipo de mudança:**
+
+| Tipo de mudança | Formato do mockup |
+|---|---|
+| Template HTML / redesign visual | Descrição de cada seção (estrutura, paleta, tipografia, layout, comportamentos) |
+| Agente / script novo | Spec: o que faz, inputs/outputs, dependências, exemplo de uso, schema afetado |
+| Mudança em código existente | Diff conceitual (antes vs depois) + impacto em fluxo |
+| Migração de dados / schema | Estado antes → estado depois, com exemplos |
+| Integração com serviço externo | Diagrama de fluxo + payload de exemplo |
+
+**Exceções (mockup dispensado):**
+
+- Correções de bug óbvio com causa identificada e fix < 5 linhas
+- Renomeações triviais (variável, arquivo)
+- Operações destrutivas onde o usuário pediu explicitamente a ação
+- Ajustes pedidos durante review de um mockup já aprovado
+
+**Como aplicar no fluxo dos pipelines:**
+
+Em pipelines tipo `site-completo` ou `site-pro-max`, o Design Agent (e
+Copy Agent quando aplicável) rodam PRIMEIRO pra produzir o mockup; o
+Orchestrator apresenta ao usuário; só depois da aprovação despacha o
+WebCraft Agent pra implementação. Em pipelines `site-rapido` ou
+`adicionar-pagamento`, mockup textual rápido antes da escrita.
+
+A aprovação do mockup pode ser explícita ("aprovado", "pode codar") ou
+implícita por correção (usuário pede ajuste — vira novo mockup, repetir).
+
+---
+
 ## Regras de ouro
 
+- **Mockup antes de implementar** — veja seção acima, ANTES de qualquer outra regra
 - **Nunca execute tarefas que são responsabilidade de um subagente** — delegue sempre
 - **Passe sempre o output completo** de um agente como input do próximo
 - **Mantenha o contexto do usuário** ao longo de todo o pipeline
