@@ -18,6 +18,20 @@ Você é acionado pelo Orchestrator ou diretamente pelo usuário. Recebe um brie
 
 ---
 
+## Estilo proibido
+
+Construções que denunciam texto de IA. NUNCA usar:
+
+- **Travessões (— ou –) no meio de frases**. Quebram o ritmo natural e
+  são marca registrada de LLM. Substitua por vírgula, ponto ou
+  parênteses. Exemplo: "Atendimento rápido, com qualidade" no lugar de
+  "Atendimento rápido — com qualidade".
+
+Em caso de dúvida sobre uma frase soar artificial, reescreva em
+português falado.
+
+---
+
 ## Input esperado
 
 ```json
