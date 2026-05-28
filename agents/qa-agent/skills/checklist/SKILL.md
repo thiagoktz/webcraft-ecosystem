@@ -416,6 +416,116 @@ function validarEeatGeo(html) {
 }
 ```
 
+---
+
+## Camada 4.9 — Design Delight (anti-convencionalidade)
+
+Padrão completo em `shared-skills/design-delight/SKILL.md`. Esta camada existe pra evitar a regressão à média dos LLMs em decisões visuais. Detecta defaults preguiçosos, anti-templates e ausência de wow-factor.
+
+### Issues críticos:
+```
+[ ] Nenhum elemento de wow-factor detectável (variable font axis, gradient mesh,
+    scroll-driven animation, cursor custom, asymmetric layout, etc.)
+[ ] Texto contém "Bem-vindo", "Saiba mais", "Lorem ipsum" ou "Clique aqui"
+[ ] font-family inclui Inter/Roboto/system-ui sem outra família declarada
+[ ] Transition CSS é "ease" simples (sem cubic-bezier custom)
+```
+
+### Warnings:
+```
+[ ] Hero com pattern flex justify-between + img à direita (provavelmente template)
+[ ] Cor primária é Tailwind default (#3B82F6, #10B981) sem customização
+[ ] 3+ <div> consecutivos com mesma estrutura (cards genéricos)
+[ ] Sem font-feature-settings (kern, liga) declarado no CSS
+[ ] Sem -webkit-font-smoothing: antialiased no CSS
+[ ] Letter-spacing ausente em headings grandes (h1, h2)
+[ ] Sem nenhum elemento <article>, <section>, <aside> no <body>
+```
+
+### Verificação programática:
+```javascript
+function validarDesignDelight(html, css) {
+  const issues = [];
+  const allText = html + '\n' + (css || '');
+
+  // 1. Wow-factor detectável?
+  const wowSignatures = [
+    /font-variation-settings\s*:/,           // variable font axis
+    /background.*conic-gradient|radial-gradient.*from/,  // gradient mesh / múltiplos stops
+    /IntersectionObserver/,                   // scroll-driven
+    /cursor\s*:\s*url\(/,                     // cursor custom
+    /clip-path\s*:\s*polygon/,                // diagonal sections
+    /animation\s*:\s*\w+\s+\d+s/,             // animação > 5s contínua
+    /lottie|@lottiefiles/,
+    /<canvas[\s>]/,                           // canvas/webgl
+    /grid-template.*minmax.*1fr.*2fr|2fr.*1fr/, // asymmetric grid
+  ];
+  const hasWow = wowSignatures.some(rx => rx.test(allText));
+  if (!hasWow) {
+    issues.push({ severity: 'critical', msg: 'Nenhum elemento de wow-factor detectado — design provavelmente convencional' });
+  }
+
+  // 2. Textos proibidos
+  const bannedCopy = [
+    /\bBem-vindos?\b/i, /\bSaiba mais\b/i, /\bLorem ipsum\b/i,
+    /\bClique aqui\b/i, /\bConheça nossos serviços\b/i
+  ];
+  for (const rx of bannedCopy) {
+    if (rx.test(html)) issues.push({ severity: 'critical', msg: `Texto proibido detectado: ${rx.source}` });
+  }
+
+  // 3. Fontes default sem outra família
+  const fontFamilyMatch = (css || '').match(/font-family\s*:\s*([^;]+)/gi) || [];
+  const fontStr = fontFamilyMatch.join(' ');
+  const usaInter = /\bInter\b|\bRoboto\b|\bsystem-ui\b/i.test(fontStr);
+  const temOutraFamilia = /\b(Fraunces|Playfair|DM Serif|Cormorant|Manrope|Space Grotesk|Crimson|Bricolage|Geist|Söhne|Migra|Druk|Tiempos|Recoleta)\b/i.test(fontStr);
+  if (usaInter && !temOutraFamilia) {
+    issues.push({ severity: 'critical', msg: 'Inter/Roboto/system-ui sem outra família declarada — escolha tipográfica preguiçosa' });
+  }
+
+  // 4. Transitions com easing default
+  const transitions = [...(css || '').matchAll(/transition\s*:\s*[^;]+;/g)];
+  const easeOnly = transitions.every(t => /\bease\b|\blinear\b/i.test(t[0]) && !/cubic-bezier/.test(t[0]));
+  if (transitions.length > 0 && easeOnly) {
+    issues.push({ severity: 'critical', msg: 'Todas transitions usam "ease" sem cubic-bezier customizado — feel genérico' });
+  }
+
+  // 5. Hero genérico (flex justify-between + img)
+  if (/<(header|section)[^>]*>[\s\S]*?display:\s*flex[\s\S]*?justify-content:\s*space-between[\s\S]*?<img/i.test(allText)) {
+    issues.push({ severity: 'warning', msg: 'Hero suspeito de pattern flex-justify-between + img (layout clichê)' });
+  }
+
+  // 6. Cor Tailwind default
+  const tailwindDefaults = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
+  const cssLower = (css || '').toLowerCase();
+  const tailwindCount = tailwindDefaults.filter(c => cssLower.includes(c)).length;
+  if (tailwindCount >= 2) {
+    issues.push({ severity: 'warning', msg: `${tailwindCount} cores Tailwind default usadas como brand — customizar paleta` });
+  }
+
+  // 7. font-feature-settings
+  if (css && !/font-feature-settings/i.test(css)) {
+    issues.push({ severity: 'warning', msg: 'Sem font-feature-settings (kern/liga) — craft detail ausente' });
+  }
+
+  // 8. Antialiasing
+  if (css && !/-webkit-font-smoothing\s*:\s*antialiased/i.test(css)) {
+    issues.push({ severity: 'warning', msg: 'Sem -webkit-font-smoothing: antialiased' });
+  }
+
+  // 9. Score de convencionalidade (heurística)
+  const score = (
+    issues.filter(i => i.severity === 'critical').length * 20 +
+    issues.filter(i => i.severity === 'warning').length * 5
+  );
+  if (score >= 30) {
+    issues.push({ severity: 'critical', msg: `Score de convencionalidade = ${score}/100 (limite 30) — rejeitar entrega` });
+  }
+
+  return issues;
+}
+```
+
 ### Verificação de title e description:
 ```javascript
 const titleMatch = html.match(/<title>([^<]+)<\/title>/);

@@ -1,5 +1,5 @@
 {
-  "version": "1.7",
+  "version": "1.8",
   "updated": "2026-05-27",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
@@ -49,7 +49,8 @@
         "shared-skills/error-handling/SKILL.md",
         "shared-skills/forms-backend/SKILL.md",
         "shared-skills/social-sharing/SKILL.md",
-        "shared-skills/eeat-geo/SKILL.md"
+        "shared-skills/eeat-geo/SKILL.md",
+        "shared-skills/design-delight/SKILL.md"
       ],
       "evals": "agents/webcraft/EVALS.md",
       "can_call": [
@@ -377,6 +378,7 @@
         "agents/design-agent/skills/uiux-pro/SKILL.md",
         "agents/design-agent/skills/taste/SKILL.md",
         "shared-skills/brand-guide/SKILL.md",
+        "shared-skills/design-delight/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "can_call": [],
@@ -443,6 +445,7 @@
         "shared-skills/output-validation/SKILL.md",
         "shared-skills/social-sharing/SKILL.md",
         "shared-skills/eeat-geo/SKILL.md",
+        "shared-skills/design-delight/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "can_call": [],
@@ -643,6 +646,7 @@
     "shared-skills/brand-guide/SKILL.md",
     "shared-skills/cms-integration/SKILL.md",
     "shared-skills/content-strategy/SKILL.md",
+    "shared-skills/design-delight/SKILL.md",
     "shared-skills/eeat-geo/SKILL.md",
     "shared-skills/error-handling/SKILL.md",
     "shared-skills/forms-backend/SKILL.md",
@@ -657,6 +661,7 @@
   ],
   "pipelines": {
     "site-completo": [
+      "design-agent",
       "seo-agent",
       "buscador-agent",
       "copy-agent",

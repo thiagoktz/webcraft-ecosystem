@@ -187,8 +187,11 @@ Um **Design Brief** estruturado em JSON com todos os tokens visuais necessários
 - Contraste texto/fundo sempre ≥ 4.5:1 (verificar antes de entregar)
 - Máximo 2 famílias tipográficas por projeto
 - Máximo 5 cores no sistema (+ variantes de hover/estado)
-- Nunca usar Arial, Roboto, ou Times New Roman como escolha intencional
+- Nunca usar Arial, Roboto, Inter ou Times New Roman como escolha intencional — são fallbacks, não identidade (`shared-skills/design-delight/SKILL.md`)
 - Sempre incluir bloco `:root {}` pronto para uso
+- **Wow-factor obrigatório:** declarar no `design_brief` qual dos 5 grupos de elementos surpreendentes (`A` hero não-fotográfico, `B` tipografia técnica, `C` motion calibrada, `D` detalhes que surpreendem, `E` layout não-convencional) será implementado nesta entrega + justificativa em 1 linha. Sem isso, entrega rejeitada na Camada 4.9 do QA. Padrão completo em `shared-skills/design-delight/SKILL.md`.
+- **3 moments of delight obrigatórios:** declarar entrada, surpresa intermediária e despedida no `design_brief.moments_of_delight`.
+- **Anti-templates explícitos:** o `design_brief` deve listar pelo menos 2 layouts/padrões genéricos rejeitados nesta entrega (no campo `anti_templates_recusados`).
 
 ---
 

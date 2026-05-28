@@ -1,8 +1,8 @@
 # WebCraft — Ecossistema Multi-Agente
 
-Repositório central com Orchestrator, **15 agentes especializados**, **18 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
+Repositório central com Orchestrator, **15 agentes especializados**, **19 shared-skills** e infraestrutura completa de logging, versionamento, dashboard e CI/CD.
 
-**Versão:** 2.5.0 · **Atualizado:** 27 de maio de 2026
+**Versão:** 2.6.0 · **Atualizado:** 27 de maio de 2026
 
 ---
 
@@ -95,11 +95,12 @@ webcraft-ecosystem/
   │     ├── ecommerce-agent/     # Pagamentos
   │     └── cms-agent/           # Painel admin
   │
-  ├── shared-skills/             # 18 skills compartilhados
+  ├── shared-skills/             # 19 skills compartilhados
   │     ├── ab-testing/          # Testes de conversão
   │     ├── acessibilidade/      # WCAG 2.1 AA
   │     ├── analytics/           # GA4 + GTM, eventos, dataLayer
   │     ├── auth-patterns/       # JWT, OAuth, sessions
+  │     ├── design-delight/      # Anti-templates, wow-factor, craft details, moments
   │     ├── eeat-geo/            # E-E-A-T + Generative Engine Optimization
   │     ├── lgpd-compliance/     # Bases legais, direitos do titular, banner
   │     ├── brand-guide/         # Identidade de marca
@@ -263,4 +264,5 @@ Detalhes em [`ACTIVATE.md`](ACTIVATE.md) e [`HANDOFF.md`](HANDOFF.md).
 | 2.2.0 | Mai 2026 | +buscador-agent (Google Places + reviews reais), +2 connectors (Unsplash, Google Places), +shared-skill social-sharing (OG + WhatsApp preview), webcraft-agent renderiza ícones sociais e og:image |
 | 2.3.0 | Mai 2026 | +analytics-agent (GA4 + GTM, mapeamento de conversões, docs do cliente), +connector google-analytics, +shared-skill analytics, qa-agent ganha Camada 4.6, webcraft-agent passa a marcar `data-cta`/`id` em CTAs/forms |
 | 2.4.0 | Mai 2026 | +compliance-agent (LGPD: banner Consent Mode v2 padrão híbrido, endpoints direitos do titular), +shared-skill lgpd-compliance, +skill legal-copy no copy-agent (gera políticas via delegação), qa-agent ganha Camada 4.7, webcraft-agent reserva slot footer para links legais, analytics-agent detecta `compliance_active` e remove o TODO LGPD interim |
-| **2.5.0** | **Mai 2026** | **+shared-skill eeat-geo (E-E-A-T + Generative Engine Optimization para ranquear em ChatGPT/Perplexity/Google AI Overview/Gemini). Aplicada em SEO, Copy, WebCraft, Content e QA Agent. qa-agent ganha Camada 4.8 com validação programática (H1 único, hierarquia sem pulos, JSON-LD parseável com @type específico, FAQPage quando há Q&A, alt-text não-genérico). Copy ganha regras de inverted pyramid e frases curtas; SEO ganha schema expandido (FAQPage, HowTo, Review, Person.sameAs); WebCraft ganha HTML semântico (`<article>`, `<time>`, `<address>`, `<cite>`).** |
+| 2.5.0 | Mai 2026 | +shared-skill eeat-geo (E-E-A-T + Generative Engine Optimization para ranquear em ChatGPT/Perplexity/Google AI Overview/Gemini). Aplicada em SEO, Copy, WebCraft, Content e QA Agent. qa-agent ganha Camada 4.8 com validação programática (H1 único, hierarquia sem pulos, JSON-LD parseável com @type específico, FAQPage quando há Q&A, alt-text não-genérico). Copy ganha regras de inverted pyramid e frases curtas; SEO ganha schema expandido (FAQPage, HowTo, Review, Person.sameAs); WebCraft ganha HTML semântico (`<article>`, `<time>`, `<address>`, `<cite>`). |
+| **2.6.0** | **Mai 2026** | **+shared-skill design-delight (anti-templates + wow-factor obrigatório + craft details + 3 moments of delight) — gate de ousadia visual pra evitar regressão à média dos LLMs. design-agent declara wow-factor escolhido no design_brief; webcraft-agent implementa; qa-agent valida Camada 4.9 com 9 checks programáticos (detecção de Inter sem família alternativa, transitions "ease" sem cubic-bezier, paleta Tailwind crua, hero flex-justify-between+img, ausência de font-feature-settings/antialiasing). `site-completo` agora inclui Design Agent — antes pulava direto pro WebCraft, root cause da convencionalidade.** |
