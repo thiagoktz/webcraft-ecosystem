@@ -163,6 +163,19 @@ url_square    = `${url_base}?w=1080&h=1080&fit=crop&crop=entropy&q=82&fm=jpg`
 
 ---
 
+## Otimização para busca em IA (EEAT + GEO)
+
+Consulte **`shared-skills/eeat-geo/SKILL.md`**. Pontos críticos do Content Agent:
+
+- **Alt text descritivo, não rótulo.** "imagem", "foto", "hero", "thumb" são proibidos. Descreva o que a imagem mostra e conecte ao contexto da página.
+  - ❌ `alt="hero"`
+  - ❌ `alt="fisioterapia"`
+  - ✅ `alt="fisioterapeuta atendendo paciente em sala individual da clínica Saúde Total"`
+- Quando há figura com legenda visível na página, devolva também a especificação `figure_caption` — o WebCraft Agent gera `<figure>` + `<figcaption>` em vez de só `<img>`. IA usa `<figcaption>` como contexto.
+- Para imagens de produto/serviço, alt inclui o nome do produto/serviço — alimenta `Product`/`Service` schema.
+
+---
+
 ## Limites
 
 - Não gere imagens (sem acesso a ferramentas de geração de imagem)

@@ -1,6 +1,6 @@
 {
-  "version": "1.6",
-  "updated": "2026-05-26",
+  "version": "1.7",
+  "updated": "2026-05-27",
   "description": "Catálogo central de agentes disponíveis no ecossistema WebCraft",
   "agents": [
     {
@@ -48,7 +48,8 @@
         "shared-skills/ab-testing/SKILL.md",
         "shared-skills/error-handling/SKILL.md",
         "shared-skills/forms-backend/SKILL.md",
-        "shared-skills/social-sharing/SKILL.md"
+        "shared-skills/social-sharing/SKILL.md",
+        "shared-skills/eeat-geo/SKILL.md"
       ],
       "evals": "agents/webcraft/EVALS.md",
       "can_call": [
@@ -102,6 +103,7 @@
         "agents/copy-agent/skills/cta/SKILL.md",
         "agents/copy-agent/skills/legal-copy/SKILL.md",
         "shared-skills/content-strategy/SKILL.md",
+        "shared-skills/eeat-geo/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "evals": "agents/copy-agent/EVALS.md",
@@ -150,6 +152,7 @@
         "agents/seo-agent/skills/schema/SKILL.md",
         "shared-skills/seo/SKILL.md",
         "shared-skills/social-sharing/SKILL.md",
+        "shared-skills/eeat-geo/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "evals": "agents/seo-agent/EVALS.md",
@@ -403,7 +406,8 @@
       },
       "system_prompt": "agents/content-agent/system-prompt.md",
       "skills": [
-        "shared-skills/social-sharing/SKILL.md"
+        "shared-skills/social-sharing/SKILL.md",
+        "shared-skills/eeat-geo/SKILL.md"
       ],
       "can_call": [],
       "called_by": [
@@ -438,6 +442,7 @@
         "shared-skills/security/SKILL.md",
         "shared-skills/output-validation/SKILL.md",
         "shared-skills/social-sharing/SKILL.md",
+        "shared-skills/eeat-geo/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "can_call": [],
@@ -638,6 +643,7 @@
     "shared-skills/brand-guide/SKILL.md",
     "shared-skills/cms-integration/SKILL.md",
     "shared-skills/content-strategy/SKILL.md",
+    "shared-skills/eeat-geo/SKILL.md",
     "shared-skills/error-handling/SKILL.md",
     "shared-skills/forms-backend/SKILL.md",
     "shared-skills/frontend-design/SKILL.md",

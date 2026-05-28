@@ -334,6 +334,88 @@ function validarLgpd(html, pipelineIncluiuCompliance, projetoFiles) {
 }
 ```
 
+---
+
+## Camada 4.8 — EEAT / GEO (Generative Engine Optimization)
+
+Padrão completo em `shared-skills/eeat-geo/SKILL.md`. Valida que o conteúdo entregue está otimizado para extração por LLMs (ChatGPT, Perplexity, Google AI Overview, Gemini).
+
+### Issues críticos:
+```
+[ ] Exatamente 1 <h1> por página
+[ ] Sem pulos de hierarquia (h1 → h3 sem h2 entre)
+[ ] Tag semântica raiz presente (<article> ou <main>)
+[ ] JSON-LD parseável (sintaxe válida)
+[ ] @type do JSON-LD é específico (não genérico Thing)
+```
+
+### Warnings:
+```
+[ ] Quando há Q&A visível no HTML, FAQPage schema também presente
+[ ] Nenhum parágrafo > 100 palavras sem subdivisão (texto-parede)
+[ ] Alt texts descritivos (não "imagem", "foto", "hero", "thumb")
+[ ] Frase média ≤ 25 palavras (heurística por parágrafo)
+[ ] <time datetime> presente em artigos com data
+[ ] sameAs em Person/Organization quando aplicável
+```
+
+### Verificação programática:
+```javascript
+function validarEeatGeo(html) {
+  const issues = [];
+
+  // 1 H1 único
+  const h1Count = (html.match(/<h1[\s>]/gi) || []).length;
+  if (h1Count !== 1) issues.push({ severity: 'critical', msg: `Esperado 1 <h1>, encontrado ${h1Count}` });
+
+  // Sem pulos de hierarquia
+  const headings = [...html.matchAll(/<h([1-6])[\s>]/gi)].map(m => parseInt(m[1]));
+  let prev = 0;
+  for (const lvl of headings) {
+    if (prev > 0 && lvl > prev + 1) {
+      issues.push({ severity: 'critical', msg: `Pulo de h${prev} para h${lvl}` });
+    }
+    prev = lvl;
+  }
+
+  // Tag semântica raiz
+  if (!/<article[\s>]/i.test(html) && !/<main[\s>]/i.test(html)) {
+    issues.push({ severity: 'critical', msg: 'Sem <article> ou <main> raiz' });
+  }
+
+  // JSON-LD parseável
+  const ldMatches = [...html.matchAll(/<script[^>]+application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi)];
+  let hasSpecific = false;
+  for (const m of ldMatches) {
+    try {
+      const j = JSON.parse(m[1]);
+      const type = Array.isArray(j) ? j[0]['@type'] : j['@type'];
+      if (type && type !== 'Thing') hasSpecific = true;
+    } catch (e) {
+      issues.push({ severity: 'critical', msg: `JSON-LD inválido: ${e.message}` });
+    }
+  }
+  if (ldMatches.length > 0 && !hasSpecific) {
+    issues.push({ severity: 'critical', msg: 'JSON-LD usa @type genérico (Thing) — usar tipo específico' });
+  }
+
+  // FAQ no texto mas sem FAQPage schema
+  const temFAQVisible = /(perguntas? frequentes?|faq)/i.test(html);
+  const temFAQSchema = ldMatches.some(m => /"@type"\s*:\s*"FAQPage"/.test(m[1]));
+  if (temFAQVisible && !temFAQSchema) {
+    issues.push({ severity: 'warning', msg: 'Texto sugere FAQ mas FAQPage schema ausente' });
+  }
+
+  // Alt genéricos
+  const genericAlts = [...html.matchAll(/<img[^>]+alt=["'](imagem|foto|hero|thumb|imagem hero|banner)["']/gi)];
+  if (genericAlts.length > 0) {
+    issues.push({ severity: 'warning', msg: `${genericAlts.length} alt(s) genérico(s) — descrever conteúdo da imagem` });
+  }
+
+  return issues;
+}
+```
+
 ### Verificação de title e description:
 ```javascript
 const titleMatch = html.match(/<title>([^<]+)<\/title>/);

@@ -32,6 +32,17 @@ português falado.
 
 ---
 
+## Otimização para busca em IA (EEAT + GEO)
+
+Consulte **`shared-skills/eeat-geo/SKILL.md`** — é regra obrigatória para conteúdo destinado a ranquear em ChatGPT, Perplexity, Google AI Overview e Gemini. Pontos críticos que se aplicam ao Copy Agent:
+
+- **Inverted pyramid:** primeira frase de cada bloco é a resposta completa. Detalhes vêm depois. Antes de devolver o JSON, releia cada bloco e pergunte: "Se a IA cortar nos primeiros 40-60 palavras, a resposta sobrevive?"
+- **Frases ≤ 20 palavras na média.** Uma ideia por frase. Transições explícitas entre conceitos ("Por isso,", "Em contraste,", "Resumindo,").
+- **Estrutura quando faz sentido:** bullets, tabelas, blocos Q&A. IA extrai estes formatos com 10x mais confiança que parágrafo corrido.
+- **EEAT no texto:** credenciais nomeadas ("Formada pela UNIFESP em 2001"), fatos concretos ("1.200 pacientes desde 2003"), evitar adjetivos vazios ("excelência", "qualidade").
+
+---
+
 ## Input esperado
 
 ```json

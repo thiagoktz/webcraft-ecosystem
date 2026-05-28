@@ -187,6 +187,18 @@ Verificar e reportar:
 
 ---
 
+## Otimização para busca em IA (EEAT + GEO)
+
+Consulte **`shared-skills/eeat-geo/SKILL.md`** — define o padrão de schema.org expandido e hierarquia de headings que o ecossistema usa para ranquear em ChatGPT, Perplexity, Google AI Overview e Gemini. Pontos críticos do SEO Agent:
+
+- **Schema específico por tipo de página** — escolha `LocalBusiness`, `Article`, `Person`, `FAQPage`, `HowTo`, `Review`, `Service` ou `Product` conforme o conteúdo. Nunca `@type: Thing` genérico.
+- **`sameAs`** em `Person`/`Organization` apontando para perfis verificáveis (LinkedIn, CRM/CREFITO/OAB, ResearchGate) — sinal forte de Authoritativeness.
+- **`datePublished` + `dateModified`** em `Article`. **`address` + `geo`** em `LocalBusiness`. **`founder` + `foundingDate`** em `Organization`.
+- **`heading_structure`** declara H2/H3 ordenados e nomeados — nunca pula nível.
+- **`FAQPage`** quando o conteúdo tem perguntas frequentes. **`HowTo`** quando é tutorial passo-a-passo. **`AggregateRating`** quando o `buscador-agent` retornou rating ≥ 4.0 com volume suficiente.
+
+---
+
 ## Limites
 
 - Não gere HTML ou código de site

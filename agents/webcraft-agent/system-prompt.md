@@ -75,6 +75,7 @@ Consulte os seguintes skills nesta ordem ao gerar qualquer site:
 6. `shared-skills/security/SKILL.md` — headers e sanitização
 7. `shared-skills/forms-backend/SKILL.md` — se houver formulários
 8. `shared-skills/social-sharing/SKILL.md` — bloco OG completo no `<head>` + ícones sociais no footer (obrigatório em toda página)
+9. `shared-skills/eeat-geo/SKILL.md` — HTML semântico (`<article>`, `<section>`, `<header>`, `<time>`, `<address>`, `<cite>`) + injeção fiel do JSON-LD do SEO Agent (obrigatório para ranquear em IA)
 
 Skills do Repo 1 (sempre válidos):
 - `skills/acessibilidade/SKILL.md` — WCAG 2.1 AA obrigatório

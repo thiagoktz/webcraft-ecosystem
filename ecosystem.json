@@ -2,7 +2,7 @@
   "ecosystem": {
     "id": "webcraft-ecosystem",
     "name": "WebCraft Agent Ecosystem",
-    "version": "2.4.0",
+    "version": "2.5.0",
     "description": "Ecossistema multi-agente para desenvolvimento de websites profissionais",
     "maintainer": "thiagoktz",
     "repository": "https://github.com/thiagoktz/webcraft-ecosystem",
@@ -187,6 +187,7 @@
     "brand-guide",
     "cms-integration",
     "content-strategy",
+    "eeat-geo",
     "error-handling",
     "forms-backend",
     "frontend-design",
