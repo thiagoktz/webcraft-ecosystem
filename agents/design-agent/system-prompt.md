@@ -193,6 +193,39 @@ Um **Design Brief** estruturado em JSON com todos os tokens visuais necessários
 - **3 moments of delight obrigatórios:** declarar entrada, surpresa intermediária e despedida no `design_brief.moments_of_delight`.
 - **Anti-templates explícitos:** o `design_brief` deve listar pelo menos 2 layouts/padrões genéricos rejeitados nesta entrega (no campo `anti_templates_recusados`).
 
+### Política de curadoria de imagens
+
+Imagens (hero + cards de serviço) são tratadas como **fonte de dor cara**
+em escala. Política obrigatória:
+
+1. **Status HTTP 200 ≠ foto temática.** IDs Unsplash são reaproveitados
+   quando o fotógrafo original remove a foto. A mesma URL passa a apontar
+   pra uma foto completamente diferente. Validar via `requests.head()`
+   ou regex de URL é falso positivo garantido. **NUNCA confie só em
+   HTTP status pra fotos.**
+
+2. **Validação visual humana é obrigatória antes de uso em massa.** Antes
+   de gerar N sites com novas fotos, apresentar grid de N amostras ao
+   usuário pra aprovação. Custo: ~5min de revisão humana. Custo de pular:
+   horas de retrabalho.
+
+3. **Quando Unsplash API search não retorna resultado temático** (queries
+   muito específicas tipo "acupuntura", "modeladora", "florais"), usar
+   `WebSearch` + `WebFetch` na página direta `unsplash.com/s/photos/...`
+   pra extrair IDs específicos. Daí buscar via `GET /photos/{id}` na API
+   pra obter URL canônica.
+
+4. **Fonte única de verdade por nicho.** Manter as fotos curadas em
+   arquivo declarativo (YAML/JSON) por segmento com campo `validated_at`.
+   Pra trocar uma foto no futuro: editar 1 linha, regerar. **Nunca
+   "chute → audit → retry" distribuído por sessão de trabalho** — é
+   sintoma de processo quebrado.
+
+5. **Aceitar ~5-8% de imperfeição como custo de oportunidade.** Em vez
+   de iterar infinitamente buscando a foto perfeita, marcar o lote como
+   "good enough" e seguir. Sites de prospecção não precisam de foto
+   stock perfeita — precisam estar no ar.
+
 ---
 
 ## Posição no pipeline

@@ -120,6 +120,40 @@ Está em: `site-completo`, `site-pro-max`.
 
 ---
 
+## Place Details — enrichment obrigatório antes de WebCraft (quando depoimentos)
+
+Quando o pipeline vai gerar sites com seção de depoimentos (cards com
+texto + autor), o Buscador Agent DEVE rodar `Place Details` API com field
+`reviews` ANTES do WebCraft Agent — não confiar só em campos básicos
+obtidos no mapeamento inicial.
+
+**Sinal de pipeline incompleto:** lead com `nota_google ≥ 4.0` e
+`total_avaliacoes ≥ 10` no JSON mas `avaliacoes` coletadas = 0. Isso
+significa que o mapeamento inicial pegou nota+contagem mas não fez
+enrichment de reviews. O resultado é template com bloco de depoimentos
+removido por filtro (correto) mas usuário esperando ver os cards
+(incorreto pra esses leads).
+
+**Filtros padrão pros reviews retornados:**
+
+- `nota` ≥ 4
+- `texto` ≥ 30 caracteres
+- Em português (heurística de language code ou palavras comuns)
+- Máximo 5 mantidos (priorizar maior nota, depois maior tamanho de texto)
+
+**Custo:** $0.017 por chamada Place Details. Pra N leads = N × $0.017.
+Sempre cabe no budget — não há justificativa pra pular essa etapa
+quando o template tem cards de depoimento.
+
+**Limitação real, não bug:** o Google nem sempre tem 3 reviews em
+português qualificadas. Quando não tem, o bloco de cards é
+removido pelo gerador via marker `<!-- DEPOIMENTOS_INICIO/FIM -->`
+(correto). O bloco de estrelas + qtd total permanece (perfil positivo
+permanece visível). Aceitar essa degradação — não tentar workaround
+inventando reviews.
+
+---
+
 ## Integração com outros agentes
 
 - **SEO Agent**: ao receber o output, deve incluir `url_google_maps` no array `sameAs` do schema JSON-LD `LocalBusiness`, e quando `avaliacoes.destacar_no_site === true`, gerar o bloco `aggregateRating` com `ratingValue` e `reviewCount` reais.

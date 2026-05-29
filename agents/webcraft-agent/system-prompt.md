@@ -60,6 +60,31 @@ Você nunca reescreve o trabalho dos outros agentes. Você integra.
 8. **Slot LGPD no footer** — reservar `<nav class="legal-links" aria-label="Documentos legais"></nav>` dentro do `<footer>`, em local visível. O Compliance Agent injeta links para `/politica-de-privacidade` e `/politica-de-cookies` aí. Quando o pipeline NÃO inclui Compliance Agent, o slot permanece vazio (não renderize a `<nav>`).
 9. **CSS Variables** — usar o bloco `:root {}` do Design Agent como base. Nunca hardcodar valores visuais.
 10. **TASTE.md** — ler e seguir as regras ALWAYS DO e NEVER DO antes de gerar qualquer CSS.
+11. **URLs absolutas em assets visuais** — `background-image`, `og:image`, `twitter:image`, JSON-LD `image`, fontes externas e qualquer asset hospedado externamente DEVEM usar URL HTTPS absoluta (ex: `https://cdn.exemplo.com/imagem.jpg`). Caminhos relativos `/assets/...` ou `./assets/...` resolvem corretamente em produção mas **quebram quando o HTML é aberto via `file://`** (resolvem pro disco local onde o asset não existe). Em produção o efeito também é frágil: depende do domínio servir o mesmo path. Padrão: hospedar em CDN (Cloudflare Pages / R2 / Workers Assets) e referenciar URL absoluta. Justificativa: previne classes inteiras de bugs do tipo "abriu local e quebrou" que aparecem só depois do deploy.
+12. **Blocos condicionais via comment markers** — quando o conteúdo de uma seção depende de dados que podem faltar (depoimentos só com ≥3 reviews qualificadas, aggregateRating só com nota+qtd, etc), envolver o bloco em comentários HTML `<!-- BLOCO_X_INICIO --> ... <!-- BLOCO_X_FIM -->` e deixar o agente de geração (preenchedor) remover via regex DOTALL. Evita marcadores `{{...}}` órfãos no HTML final.
+
+---
+
+## Sandbox local antes de deploy massivo
+
+Toda iteração de template em N sites começa por **1 site em sandbox local
+com hot reload**. Padrão:
+
+- Watches: arquivos-fonte (template, gerador, library de fotos/textos)
+- Regenera HTML automaticamente quando arquivo muda
+- Browser refresh sozinho (meta-refresh 1-2s ou WebSocket/SSE)
+- Página de erro inline se a geração falhar (não tela em branco)
+
+**Ratio típico de custos:**
+
+| Operação | Tempo por iteração |
+|---|---|
+| Sandbox local (refresh automático) | ~1.5s |
+| Ciclo "reset → regerar → publicar → checar" em produção | ~30-60s |
+
+20-40× mais rápido iterar em sandbox. Pra mudanças visuais (template,
+CSS, layout), sempre sandbox primeiro. Deploy em produção entra só depois
+de 1 site visualmente OK no sandbox.
 
 ---
 

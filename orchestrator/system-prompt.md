@@ -167,9 +167,47 @@ implícita por correção (usuário pede ajuste — vira novo mockup, repetir).
 
 ---
 
+## Migração incremental e pre-flight check (obrigatório em deploys de massa)
+
+Quando uma mudança afeta ≥ 10 sites em produção (mudança de template,
+schema, paleta, fotos, qualquer coisa visualmente perceptível), o
+Orchestrator NUNCA aplica em todos de uma vez.
+
+**Padrão obrigatório:**
+
+1. **Sandbox primeiro.** Antes de regenerar N sites, testar a mudança em 1
+   site local com hot reload. Custo: ~1.5s/iteração no sandbox vs ~30s+
+   no ciclo "reset → regerar → publicar → checar". Ratio típico 20:1.
+2. **Pre-flight check em amostras.** Antes de publicar em produção, rodar
+   uma bateria automática de validação (vars literais, JSON-LD, hero
+   presente, WhatsApp link, HEAD checks em imagens externas) + grid de
+   screenshots de N amostras representativas. Saída em página HTML única
+   pra revisão visual humana em ~30-60s.
+3. **Migração segmento por segmento.** Aplicar a mudança a um segmento
+   por vez. Aguardar aprovação humana explícita entre segmentos.
+   Antes do próximo, rodar pre-flight check específico do recém-migrado.
+4. **Aceitar limitações externas.** Quando uma fonte de dados externa
+   (Google Reviews, Unsplash, etc) não retorna o que o template idealmente
+   pediria, o Orchestrator aceita o caso degradado (template tem
+   blocos condicionais pra isso) em vez de tentar workarounds caros.
+
+**Anti-pattern explícito:** "validar 100 sites lendo 100 screenshots
+um por um" — em vez disso, validar 3-5 amostras representativas
+em grid + auditoria automática nos demais.
+
+**Quando NÃO precisa de migração incremental:**
+
+- Mudança em < 10 sites total
+- Bug fix isolado com causa identificada
+- Ajuste de copy/texto sem mudança visual
+- Mudança pedida explicitamente por correção pontual
+
+---
+
 ## Regras de ouro
 
 - **Mockup antes de implementar** — veja seção acima, ANTES de qualquer outra regra
+- **Migração incremental em mudanças de massa** — veja seção acima, segmento por segmento com pre-flight
 - **Nunca execute tarefas que são responsabilidade de um subagente** — delegue sempre
 - **Passe sempre o output completo** de um agente como input do próximo
 - **Mantenha o contexto do usuário** ao longo de todo o pipeline
