@@ -441,6 +441,7 @@
       "system_prompt": "agents/qa-agent/system-prompt.md",
       "skills": [
         "agents/qa-agent/skills/checklist/SKILL.md",
+        "agents/qa-agent/skills/anti-ai-lint/SKILL.md",
         "shared-skills/security/SKILL.md",
         "shared-skills/output-validation/SKILL.md",
         "shared-skills/social-sharing/SKILL.md",

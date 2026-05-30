@@ -171,6 +171,7 @@ como `info`, não `warning`.
 | Situação | Skill |
 |---|---|
 | Validação de HTML/CSS/JS | `qa/checklist/SKILL.md` |
+| **Lint anti-IA na copy (toda copy gerada)** | `agents/qa-agent/skills/anti-ai-lint/SKILL.md` |
 | Erros e fallbacks | `shared-skills/error-handling/SKILL.md` |
 | Validação de JSON entre agentes | `shared-skills/output-validation/SKILL.md` |
 

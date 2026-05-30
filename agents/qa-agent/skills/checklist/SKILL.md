@@ -622,6 +622,65 @@ scriptsExternos.forEach(script => {
 
 ---
 
+## Camada 8 — Copy / Detecção de IA
+
+Toda copy escrita por LLM (Copy Agent ou WebCraft Agent) passa por lint anti-IA antes da entrega. Ver skill detalhado: `agents/qa-agent/skills/anti-ai-lint/SKILL.md`.
+
+Complementar à proibição preventiva no Copy Agent. Esta camada captura tells que escaparam, vieram de outro agente, ou foram editados pelo usuário.
+
+### Issues críticos (bloqueiam aprovação):
+
+```
+[ ] Zero em-dashes (—) inline fora da whitelist decorativa
+    (whitelist: class="dash", aria-hidden, signature "— TK", aria-label brand)
+[ ] Zero hyphen-as-dash (padrão "palavra - palavra" com espaços)
+[ ] Sem abrideiras formulaicas:
+    "É importante notar...", "É essencial...", "Vale ressaltar..."
+    "Imagine que...", "Vamos mergulhar...", "Em um mundo onde..."
+[ ] Sem conclusões genéricas: "Em conclusão", "Para finalizar", "Em suma"
+```
+
+### Warnings (não bloqueiam, reportar):
+
+```
+[ ] Intensificadores artificiais: "de fato", "verdadeiramente", "genuinamente"
+[ ] Conectores paralelos clichês: "não apenas X, mas também Y", "tanto X quanto Y",
+    "combina X com Y", "integra X e Y de forma..."
+[ ] Triplets paralelos mecânicos repetidos na mesma página
+[ ] Hedging excessivo (>2 ocorrências de talvez/possivelmente num parágrafo)
+[ ] Clichês de venda: "que faz toda a diferença", "esses pequenos detalhes",
+    "resultados que falam por si"
+```
+
+### Comando único de varredura (auto):
+
+```bash
+# Travessões críticos (excluindo decorativos)
+grep -nE '—' index.html | grep -v 'aria-hidden\|aria-label\|class="dash"\|pull-author'
+
+# Hyphen-as-dash
+grep -nE '[a-zA-ZáéíóúâêôãõçÀ-ÿ] - [a-zA-ZáéíóúâêôãõçÀ-ÿ]' index.html
+
+# Abrideiras + conclusões
+grep -niE '\bÉ (importante|essencial|fundamental|interessante|crucial) (notar|destacar|ressaltar|mencionar)|\b(imagine que|imagine o)|vamos (mergulhar|explorar|descobrir)|em um mundo (onde|cada vez)|\b(em conclusão|para finalizar|para concluir|em suma)' index.html
+
+# Intensificadores + paralelismos
+grep -niE '\b(verdadeiramente|de fato|genuinamente)\b|(não apenas.*mas também|tanto.*quanto)' index.html
+```
+
+### Whitelist — patterns aceitáveis:
+- Brand voice declarado em `taste.md` (ex: estilo paralelista intencional) reduz severidade
+- CTAs imperativos curtos ("Falar no WhatsApp", "Pedir orçamento") nunca são tell
+- Elementos decorativos com `aria-hidden="true"` ou classes `.dash`/`.eyebrow`
+- Termos técnicos do domínio (white-label, performance, ROAS, etc) mesmo se LLM os use
+- Citações de clientes (depoimentos com permissão) mantêm a fala original
+
+### Output JSON:
+
+Issues encontradas entram em `issues` com `category: "copy-ai-lint"` e o campo extra `matched_pattern` com o trecho identificado.
+
+---
+
 ## Score e critério de aprovação
 
 ```javascript
@@ -659,4 +718,5 @@ SEO:           title 50-60 ✓  description 150-160 ✓  schema ✓
 Performance:   defer ✓  lazy ✓  hero eager ✓  fonts swap ✓
 Segurança:     sem eval ✓  rel noopener ✓  sem keys ✓
 Responsivo:    375px ✓  768px ✓  1280px ✓
+Copy AI lint:  sem em-dash ✓  sem abrideiras ✓  sem clichês ✓
 ```
