@@ -73,13 +73,43 @@ enviado         → "Disparado"
 respondido      → "Respondido"
 ```
 
-## Implementação de referência
+## Implementação de referência — HubSpot (Companies + Deals)
 
-No projeto agente-sites: `sync_leads_tracking.py`.
-- Expõe `sync(dry_run=False, verbose=True) -> dict` (stats).
-- `agente_redator.py` chama `sync()` no fim do `main()`, dentro de
-  try/except, só quando gerou mensagens (não em DRY_RUN).
-- CLI: `python3 sync_leads_tracking.py [--dry-run]`.
+No projeto agente-sites o CRM principal é **HubSpot via API REST**
+(`hubspot_sync.py`). A planilha xlsx (`sync_leads_tracking.py`) virou
+fallback manual.
 
-Em outros stacks, replicar o mesmo contrato: função idempotente,
-update-in-place de status, preservação de colunas humanas, backup.
+Modelo: cada lead → **Company** (dedup por propriedade custom `place_id`)
++ **Deal** associado, no pipeline "Prospecção de Sites".
+
+- `setup()` — idempotente: cria propriedades custom (companies + deals) e
+  configura o pipeline. CLI: `python3 hubspot_sync.py setup`.
+- `sync(dry_run, verbose) -> dict` — upsert Company + upsert Deal +
+  associação. CLI: `python3 hubspot_sync.py sync [--dry-run]`.
+- `agente_redator.py` chama `sync()` no fim do `main()` (try/except, só
+  quando gerou mensagens).
+
+### Gotchas reais da API HubSpot (descobertos em produção)
+
+1. **Token: só Private App (`pat-na1-...`).** A Personal Access Key da
+   CLI (`hs init`) e o app "MCP/OAuth" NÃO autenticam na API de CRM —
+   devolvem 401 EXPIRED_AUTHENTICATION. Private App = Settings →
+   Integrations → Private Apps (token estático, sem redirect URL).
+
+2. **Conta free/standard: 1 pipeline de deals só.** Criar um novo dá
+   `400 API_LIMIT`. Solução: repurposar o pipeline default — renomear +
+   reconciliar os estágios (relabel um a um por ordem, deletar extras).
+   PATCH no pipeline com array `stages` NÃO substitui os estágios; tem que
+   editar cada estágio via `/pipelines/deals/{pid}/stages/{stageId}`.
+
+3. **Metadata de estágio vai como string:** `{"isClosed":"true",
+   "probability":"1.0"}`. Won = prob 1.0 + isClosed; Lost = prob 0.0 +
+   isClosed. O HubSpot deriva won/lost da metadata, não do id do estágio
+   (o id pode continuar "closedwon" mesmo com label "Perdido").
+
+4. **Dedup por search:** `POST /crm/v3/objects/{obj}/search` filtrando
+   `place_id EQ <id>` → cria ou atualiza. Associação deal↔company:
+   `PUT /crm/v4/objects/deals/{id}/associations/default/companies/{cid}`.
+
+Em outros stacks (planilha, outro CRM), replicar o contrato: idempotente,
+só-avança no funil, nunca sobrescrever dado humano, backup antes.
