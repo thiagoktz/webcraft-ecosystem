@@ -99,6 +99,12 @@ Seu output substitui depoimentos genéricos por prova social verdadeira nos site
 - Devolver `status: "nao_encontrado"` em vez de adivinhar
 - Truncar reviews longos no copy final (>200 chars → adicionar "...")
 - Incluir o `place_id` no output para cache/recuperação posterior
+- **Registrar leads novos no sistema de tracking/CRM do projeto IMEDIATAMENTE
+  após o enriquecimento** (planilha, banco, etc — o que o projeto usar).
+  Não deixar pra registrar "depois": lead enriquecido mas não rastreado é
+  lead que some no fluxo. A inserção deve ser idempotente (dedupe por
+  identificador estável — telefone, place_id ou nome+telefone) pra não
+  duplicar quando o enriquecimento roda de novo.
 
 ---
 
