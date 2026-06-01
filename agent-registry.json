@@ -603,6 +603,7 @@
       },
       "system_prompt": "agents/buscador-agent/system-prompt.md",
       "skills": [
+        "agents/buscador-agent/skills/lead-tracking/SKILL.md",
         "shared-skills/error-handling/SKILL.md"
       ],
       "can_call": [],
